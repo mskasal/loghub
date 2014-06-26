@@ -20,34 +20,46 @@ class Applications(object):
             "previlleges":credential_id
             }
             )
+
     def get_apps(credential_id):
-        try:
-            self.coll.find_one({"previlleges":credential_id})
-            return True
-        except:
-            return False
+        registered_apps = self.coll.find()
+        applications = []
+        for app in registered_apps:
+            if any(credential_id) in app['previlleges']:
+                applications.append(app) 
+        
+        return applications
         
 
 
     def delete_apps(APP_TOKEN,credential_id):
         try:
-            self.coll.remove({"APP_TOKEN":APP_TOKEN,
-                "previlleges": credential_id
-            })
+            app = self.coll.find_one({
+                    "APP_TOKEN":APP_TOKEN,
+                        })
+            app["previlleges"].remove(credential_id)
+            self.coll.update(app)
             return True
         except:
             return False
 
     def reset_app_token(old_app_token,credential_id):
         NEW_APP_TOKEN = hashlib.md5((name + credential_id+math.floor(time.time()))).encode('utf8')).hexdigest()
-        old_record = self.coll.find_one({"previlleges":credential_id}
+        old_record = self.coll.find_one({"APP_TOKEN":old_app_token})
+        old_record["APP_TOKEN"] = NEW_APP_TOKEN
+        return self.coll.update(old_record)
 
-        self.coll.update(
-            "id":old_record["id"],
-            "name":old_record["name"],
-            "APP_TOKEN": NEW_APP_TOKEN,
-            "previlleges":credential_id
-            })
+    def set_app_previliges(credential_id,APP_TOKEN,users):
+        app = self.coll.find_one({
+                "APP_TOKEN":APP_TOKEN,
+                "credential_id":credential_id
+                })
+        app["previlleges"].append(users)
+        return self.coll.update(app)
+
+
+
+        
 
         
 
