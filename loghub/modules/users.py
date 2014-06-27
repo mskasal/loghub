@@ -71,11 +71,24 @@ def remember_account(email):
 		return True
 	return False
 
+
 def reset_user_password(email, new_password, code):
 	if list(db.codes.find({"email": email, "code": code})):
 		db.users.update({"email": email}, {"$set":{"password": new_password}}, upsert=False)
 		return True
 	else:
 		return False
+
+
+def reset_credential_id(email, password):
+	credential_string = email + password + str(floor(time()))
+	credential_id = md5(credential_string.encode()).hexdigest()
+	db.users.update({"email": email, "password": password}, 
+					{"$set": {"credential_id": credential_id}},
+					upsert=False)
+	
+	return get_user(email=email, password=password)
+	
+
 
 #sending email is not implemented correctly.
