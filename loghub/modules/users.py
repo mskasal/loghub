@@ -13,8 +13,7 @@ def create_user(email, password):
 	user = {"email": email,
 			"password": password,
 			"registered_at": record_time,
-			"credential_id": credential_id,
-			"privileges": []}
+			"credential_id": credential_id}
 	try:
 		db.users.insert(user)
 
@@ -26,8 +25,8 @@ def create_user(email, password):
 
 def get_user(email, password):
 	result = db.users.find(
-		{"email": email, "password": password}, {
-		 "_id": 0,
+		{"email": email, "password": password}, 
+		{"_id": 0,
 		 "email": 1,
 		 "password": 1,
 		 "registered_at": 1,
