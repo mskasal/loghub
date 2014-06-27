@@ -1,70 +1,71 @@
-from database import Database
+import time
+from datetime import datetime
 import hashlib
 import math
 
-class Applications(object):
-    """docstring for Applications"""
-    _collectionName = "apps"
+from database import db
+from previlleges import*
 
 
-    def __init__(self, db):
-        super(Applications, self).__init__()
-        self.db = db
-        self.coll = db[self._collectionName]
-
-    def register_app(name,credential_id):
-        APP_TOKEN = hashlib.md5((name + credential_id).encode('utf8')).hexdigest()
-        self.coll.insert({
-            "name":name,
-            "APP_TOKEN": APP_TOKEN
-            "previlleges":credential_id
-            }
-            )
-
-    def get_apps(credential_id):
-        registered_apps = self.coll.find()
-        applications = []
-        for app in registered_apps:
-            if any(credential_id) in app['previlleges']:
-                applications.append(app) 
-        
-        return applications
-        
+collection_name = "apps"
+coll = db[collection_name]
 
 
-    def delete_apps(APP_TOKEN,credential_id):
-        try:
-            app = self.coll.find_one({
-                    "APP_TOKEN":APP_TOKEN,
-                        })
-            app["previlleges"].remove(credential_id)
-            self.coll.update(app)
-            return True
-        except:
-            return False
 
-    def reset_app_token(old_app_token,credential_id):
-        NEW_APP_TOKEN = hashlib.md5((name + credential_id+math.floor(time.time()))).encode('utf8')).hexdigest()
-        old_record = self.coll.find_one({"APP_TOKEN":old_app_token})
-        old_record["APP_TOKEN"] = NEW_APP_TOKEN
-        return self.coll.update(old_record)
+def register_app(name,credential_id):    
+    APP_TOKEN = hashlib.md5((name + credential_id).encode('utf8')).hexdigest()
+    coll.insert({
+        "name":name,
+        "APP_TOKEN": APP_TOKEN,
+        "createdAt": datetime.utcnow()
+        }
+        )
 
-    def set_app_previliges(credential_id,APP_TOKEN,users):
-        app = self.coll.find_one({
-                "APP_TOKEN":APP_TOKEN,
+def get_apps(credential_id):
+    user = db["users"].find_one({
                 "credential_id":credential_id
                 })
-        app["previlleges"].append(users)
-        return self.coll.update(app)
-
-
-
+    user_id = user["id"]
+    app_ids = get_user_apps(user_id)
+    app_list = []
+    for app_id in app_ids:
+        application = col.find_one({
+            "id":app_id
+            })
+        app_list.append(application)
         
-
-        
-
+    return app_list
 
 
+def delete_apps(APP_TOKEN,credential_id):
+    user = db["users"].find_one({
+                "credential_id":credential_id
+                })
+    user_id = user["id"]
+    app = coll.find_one({
+           "APP_TOKEN":APP_TOKEN,
+            })
+    app_id = app["id"]
+    try:
+        if is_admin(app_id, user_id):
+            coll.remove(app)
+            return True
+    except:
+        return False
+    return False
+
+    
+def reset_app_token(old_app_token,credential_id):    
+    record = coll.find_one({"APP_TOKEN":old_app_token})    
+    variable = str(math.floor(time.time())    )
+    NEW_APP_TOKEN = hashlib.md5((record["name"] + credential_id + variable).encode('utf8')).hexdigest()
+    record["APP_TOKEN"] = NEW_APP_TOKEN
+    return coll.save(record)
 
 
-
+#register_app("selam","4")
+#print len(get_apps("1"))
+#delete_apps("ea28414aff1cf6ad599ad74dc7c14599","1")
+get_apps("2")
+reset_app_token("a577b6ed4a40af193dca7376c6081957","2")
+get_apps("2")
