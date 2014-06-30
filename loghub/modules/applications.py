@@ -3,7 +3,7 @@ from datetime import datetime
 import hashlib
 import math
 
-from database import db
+from loghub.storage import db
 from previlleges import*
 
 

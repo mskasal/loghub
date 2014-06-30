@@ -18,8 +18,8 @@ def create_user(email, password):
 		db.users.insert(user)
 
 	except:
-		pass
-
+		return None
+		
 	return credential_id
 
 
@@ -30,7 +30,8 @@ def get_user(email, password):
 		 "email": 1,
 		 "password": 1,
 		 "registered_at": 1,
-		 "credential_id": 1})
+		 "credential_id": 1
+		 })
 	result = list(result)
 	if result:
 		user = result[0]
@@ -58,6 +59,7 @@ def change_user_email(credential_id, password, new_email):
 def remember_account(email):
 	result = db.users.find({"email": email})
 	if list(result):
+
 		code = md5((email + str(floor(time()))).encode()).hexdigest()
 		if not list(db.codes.find({"email": email})):
 			db.codes.insert({"email": email, "code": code})
@@ -87,7 +89,3 @@ def reset_credential_id(email, password):
 					upsert=False)
 	
 	return get_user(email=email, password=password)
-	
-
-
-#sending email is not implemented correctly.
