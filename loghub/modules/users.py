@@ -7,6 +7,15 @@ from loghub.emails import send_email
 import datetime
 
 def create_user(email, password):
+	if not email and not password:
+		return 23 
+	elif not email:
+		return 24
+	elif "@" not in email or "." not in email:
+		return 25
+	elif len(password) < 6:
+		return 26
+	
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
 	record_time = str(datetime.datetime.utcnow())
@@ -16,28 +25,35 @@ def create_user(email, password):
 			"credential_id": credential_id}
 	try:
 		db.users.insert(user)
-
 	except:
-		return None
-		
+		return 22
 	return credential_id
 
 
 def get_user(email, password):
-	result = db.users.find(
+	if not email and not password:
+		return 23
+
+	elif not email:
+		return 24
+
+	elif "@" not in email or "." not in email:
+		return 25
+
+	elif len(password) < 6:
+		return 27
+
+	user = db.users.find_one(
 		{"email": email, "password": password}, 
 		{"_id": 0,
 		 "email": 1,
 		 "password": 1,
 		 "registered_at": 1,
-		 "credential_id": 1
-		 })
-	result = list(result)
-	if result:
-		user = result[0]
+		 "credential_id": 1})
+	if user:
 		return user
 	else:
-		return None
+		return 21
 
 
 def change_user_password(credential_id, password, new_password):
@@ -45,47 +61,54 @@ def change_user_password(credential_id, password, new_password):
 	 				 "password": password}, 
 	 				{"$set": {"password": new_password}}, 
 	 				upsert=False)
-	return True
+	return 20
 	
 
 def change_user_email(credential_id, password, new_email):
-	db.users.update({"credential_id": credential_id, 
-					 "password": password}, 
-					{"$set": {"email": new_email}},
-					upsert=False)
-	return True
+	result = db.users.update({"credential_id": credential_id, 
+							  "password": password}, 
+							 {"$set": {"email": new_email}},
+							 upsert=False)
+	return 20
 
 
 def remember_account(email):
-	result = db.users.find({"email": email})
-	if list(result):
-
+	user = db.users.find_one({"email": email})
+	if user:
 		code = md5((email + str(floor(time()))).encode()).hexdigest()
-		if not list(db.codes.find({"email": email})):
+		try:
 			db.codes.insert({"email": email, "code": code})
-		else:
-			db.codes.insert({"email": email}, {"code": code})
+		except:
+			db.codes.update({"email": email}, 
+							{"$set":{"code": code}},
+							upsert=False)
 		#send_email(subject="Shame on you.", 
 		#		sender="sender@botego.com", 
 		#		recipients=[email],
 		#		text_body=code)
-		return True
-	return False
+		return 20
+	else:
+		return 21
 
 
 def reset_user_password(email, new_password, code):
-	if list(db.codes.find({"email": email, "code": code})):
-		db.users.update({"email": email}, {"$set":{"password": new_password}}, upsert=False)
-		return True
+	if db.codes.find_one({"email": email, "code": code}):
+		db.users.update({"email": email}, 
+						{"$set": {"password": new_password}}, 
+						upsert=False)
+		return 20
 	else:
-		return False
-
-
+		return 21
+	
 def reset_credential_id(email, password):
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
-	db.users.update({"email": email, "password": password}, 
-					{"$set": {"credential_id": credential_id}},
-					upsert=False)
-	
-	return get_user(email=email, password=password)
+	response = db.users.update({"email": email, "password": password}, 
+		{"$set": {"credential_id": credential_id}},
+		upsert = False)
+
+	if response["n"] == 1:
+		return get_user(email=email, password=password)
+	return 21
+
+#sending email is not implemented correctly.
