@@ -57,12 +57,16 @@ def get_user(email, password):
 
 
 def change_user_password(credential_id, password, new_password):
-	db.users.update({"credential_id": credential_id,
-	 				 "password": password}, 
-	 				{"$set": {"password": new_password}}, 
-	 				upsert=False)
-	return 20
-	
+	if len(password) < 6 or len(new_password) < 6:
+		return 27
+	result = db.users.update({"credential_id": credential_id,
+	 				 			"password": password}, 
+	 							{"$set": {"password": new_password}}, 
+	 							upsert=False)
+	if result["n"] > 0:
+		return 20
+	else:
+		return 21 
 
 def change_user_email(credential_id, password, new_email):
 	result = db.users.update({"credential_id": credential_id, 
@@ -73,6 +77,10 @@ def change_user_email(credential_id, password, new_email):
 
 
 def remember_account(email):
+	if not email:
+		return 24
+	elif "@" not in email or "." not in email:
+		return 25
 	user = db.users.find_one({"email": email})
 	if user:
 		code = md5((email + str(floor(time()))).encode()).hexdigest()
@@ -92,15 +100,26 @@ def remember_account(email):
 
 
 def reset_user_password(email, new_password, code):
-	if db.codes.find_one({"email": email, "code": code}):
-		db.users.update({"email": email}, 
-						{"$set": {"password": new_password}}, 
-						upsert=False)
+	if len(new_password) < 6:
+		return 27
+	response = db.users.update({"email": email}, 
+			{"$set": {"password": new_password}}, 
+			upsert=False)
+	if response["n"] > 0:
 		return 20
 	else:
 		return 21
-	
+
+
 def reset_credential_id(email, password):
+	if not email and not password:
+		return 23
+	elif not email:
+		return 24
+	elif "@" not in email or "." not in email:
+		return 25
+	elif len(password) < 6:
+		return 27
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
 	response = db.users.update({"email": email, "password": password}, 
