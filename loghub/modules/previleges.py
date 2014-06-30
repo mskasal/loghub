@@ -1,4 +1,4 @@
-from database import db 
+from loghub.storage import db
 
 
 collection_name = "previliges"

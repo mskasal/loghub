@@ -4,7 +4,7 @@ import hashlib
 import math
 
 from loghub.storage import db
-from previlleges import*
+from previleges import*
 
 
 collection_name = "apps"
@@ -22,10 +22,12 @@ def register_app(name,credential_id):
         )
 
 def get_apps(credential_id):
+    print db["users"].count()
     user = db["users"].find_one({
                 "credential_id":credential_id
                 })
-    user_id = user["id"]
+    print user
+    user_id = user["_id"]
     app_ids = get_user_apps(user_id)
     app_list = []
     for app_id in app_ids:
@@ -66,6 +68,6 @@ def reset_app_token(old_app_token,credential_id):
 #register_app("selam","4")
 #print len(get_apps("1"))
 #delete_apps("ea28414aff1cf6ad599ad74dc7c14599","1")
-get_apps("2")
-reset_app_token("a577b6ed4a40af193dca7376c6081957","2")
-get_apps("2")
+#get_apps("2")
+#reset_app_token("a577b6ed4a40af193dca7376c6081957","2")
+#get_apps("2")

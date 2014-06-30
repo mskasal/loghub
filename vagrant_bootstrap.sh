@@ -10,7 +10,7 @@ sudo apt-get install -y mongodb-10gen
 
 #pyhon packages and vim
 apt-get install -y python-pip python-setuptools vim
-pip install celery pymongo flower ipython flask
+pip install celery pymongo flower ipython flask flask-mail
 
 #CELERY BROKER
 apt-get install -y rabbitmq-server
