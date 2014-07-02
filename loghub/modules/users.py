@@ -7,15 +7,6 @@ from loghub.emails import send_email
 import datetime
 
 def create_user(email, password):
-	if not email and not password:
-		return 23 
-	elif not email:
-		return 24
-	elif "@" not in email or "." not in email:
-		return 25
-	elif len(password) < 6:
-		return 26
-	
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
 	record_time = str(datetime.datetime.utcnow())
@@ -26,23 +17,11 @@ def create_user(email, password):
 	try:
 		db.users.insert(user)
 	except:
-		return 22
+		return 32
 	return credential_id
 
 
 def get_user(email, password):
-	if not email and not password:
-		return 23
-
-	elif not email:
-		return 24
-
-	elif "@" not in email or "." not in email:
-		return 25
-
-	elif len(password) < 6:
-		return 27
-
 	user = db.users.find_one(
 		{"email": email, "password": password}, 
 		{"_id": 0,
@@ -53,12 +32,10 @@ def get_user(email, password):
 	if user:
 		return user
 	else:
-		return 21
+		return 31
 
 
 def change_user_password(credential_id, password, new_password):
-	if len(password) < 6 or len(new_password) < 6:
-		return 27
 	result = db.users.update({"credential_id": credential_id,
 	 				 			"password": password}, 
 	 							{"$set": {"password": new_password}}, 
@@ -66,7 +43,7 @@ def change_user_password(credential_id, password, new_password):
 	if result["n"] > 0:
 		return 20
 	else:
-		return 21 
+		return 31 
 
 def change_user_email(credential_id, password, new_email):
 	result = db.users.update({"credential_id": credential_id, 
@@ -77,10 +54,6 @@ def change_user_email(credential_id, password, new_email):
 
 
 def remember_account(email):
-	if not email:
-		return 24
-	elif "@" not in email or "." not in email:
-		return 25
 	user = db.users.find_one({"email": email})
 	if user:
 		code = md5((email + str(floor(time()))).encode()).hexdigest()
@@ -96,30 +69,20 @@ def remember_account(email):
 		#		text_body=code)
 		return 20
 	else:
-		return 21
+		return 31
 
 
 def reset_user_password(email, new_password, code):
-	if len(new_password) < 6:
-		return 27
 	response = db.users.update({"email": email}, 
 			{"$set": {"password": new_password}}, 
 			upsert=False)
 	if response["n"] > 0:
 		return 20
 	else:
-		return 21
+		return 31
 
 
 def reset_credential_id(email, password):
-	if not email and not password:
-		return 23
-	elif not email:
-		return 24
-	elif "@" not in email or "." not in email:
-		return 25
-	elif len(password) < 6:
-		return 27
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
 	response = db.users.update({"email": email, "password": password}, 
@@ -128,6 +91,6 @@ def reset_credential_id(email, password):
 
 	if response["n"] == 1:
 		return get_user(email=email, password=password)
-	return 21
+	return 31
 
 #sending email is not implemented correctly.
