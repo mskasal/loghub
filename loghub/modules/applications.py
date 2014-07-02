@@ -31,7 +31,7 @@ def register_app(name,credential_id):
     if not user_id:
         return 44
     add_user_to_app(user_id,app_id,"admin")
-    return 40
+    return 20
 
 
 def get_apps(credential_id):
