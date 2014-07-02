@@ -4,7 +4,7 @@ import hashlib
 import math
 
 from loghub.storage import db
-from previleges import*
+from privileges import*
 
 
 collection_name = "apps"
@@ -34,6 +34,7 @@ def register_app(name,credential_id):
     return 20
 
 
+
 def get_apps(credential_id):
     if not credential_id:
         return 43
@@ -59,7 +60,7 @@ def get_apps(credential_id):
             return 46
         app_list.append(application)
         
-    return app_list
+    return app_list, 40
 
 
 def delete_apps(APP_TOKEN,credential_id):
@@ -68,6 +69,7 @@ def delete_apps(APP_TOKEN,credential_id):
                 })
     if not user:
         return 20
+
     user_id = user["_id"]
     app = coll.find_one({
            "APP_TOKEN":APP_TOKEN,
@@ -78,7 +80,7 @@ def delete_apps(APP_TOKEN,credential_id):
     try:
         if is_admin(app_id, user_id):
             coll.remove(app)
-            return True
+            return True, 40
     except:
         return 48
 
@@ -100,5 +102,6 @@ def reset_app_token(old_app_token,credential_id):
     try:
         coll.save(record)
         return 20
+
     except:
         return 50
