@@ -49,7 +49,7 @@ def get_apps(credential_id):
     app_ids = get_user_apps(user_id)
 
     if not app_ids:
-        return 45 #there isn't any registered apps
+        return 45 
 
     app_list = []
     for app_id in app_ids:
@@ -60,7 +60,7 @@ def get_apps(credential_id):
             return 46
         app_list.append(application)
         
-    return app_list, 40
+    return app_list
 
 
 def delete_apps(APP_TOKEN,credential_id):
@@ -80,7 +80,7 @@ def delete_apps(APP_TOKEN,credential_id):
     try:
         if is_admin(app_id, user_id):
             coll.remove(app)
-            return True, 40
+            return 20
     except:
         return 48
 
