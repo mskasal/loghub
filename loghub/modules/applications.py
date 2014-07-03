@@ -11,7 +11,6 @@ collection_name = "apps"
 coll = db[collection_name]
 
 
-
 def register_app(name,credential_id):
     if not name and not credential_id:
         return 41
@@ -22,14 +21,15 @@ def register_app(name,credential_id):
 
     APP_TOKEN = hashlib.md5((name + credential_id).encode('utf8')).hexdigest()
     app_id = coll.insert({
-        "name":name,
-        "APP_TOKEN": APP_TOKEN,
-        "createdAt": datetime.utcnow()
-        }
-        )
+            "name":name,
+            "APP_TOKEN": APP_TOKEN,
+            "createdAt": datetime.utcnow()
+            }
+            )
     user_id = db["users"].find_one({"credential_id":credential_id })["_id"]
     if not user_id:
         return 44
+    
     add_user_to_app(user_id,app_id,"admin")
     return 20
 
@@ -42,6 +42,7 @@ def get_apps(credential_id):
     user = db["users"].find_one({
                 "credential_id":credential_id
                 })
+    
     if not user:
         return 44
 

@@ -35,8 +35,6 @@ def query_log(APP_TOKENS, query_limit=100,
         query["log"] = {}
         query["log"]["$regex"] = keyword
 
-    print query
-
     if level is not None:
         query["level"] = level
 
