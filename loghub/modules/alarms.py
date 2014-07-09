@@ -1,44 +1,49 @@
 from loghub.storage import db
 
 
-def register_alarm(credential_id, name, receivers, app_tokens=None, 
-					limit=1, keyword=None, level=None, note=None):
-	result = list(db.users.find({"credential_id": credential_id}))
-	if result:
-		user = result[0]
-		valid_apps = user["privileges"]
-		
-		requested_apps = db.applications.find({"app_token": {"$in": app_tokens}})
-		requested_apps = list(requested_apps)
-		requested_app_ids = [str(each["_id"]) for each in requested_apps]
+def register_alarm(credential_id, alarm):
+	user = db.users.find_one({"credential_id": credential_id})
+	if not user:
+		return 36
+	valid_apps = db.privileges.find({"user_id": user["_id"]})
+	if "app_tokens" not in alarm:
+		alarm["tracking"] = "any"
+	else:
+		requested_apps = db.applications.find({"app_token": {"$in": alarm["app_tokens"]}})
 		for each in requested_apps:
 			if each not in valid_apps:
-				return None
+				return 63
+		requested_app_ids = [str(each["_id"]) for each in requested_apps]
+		alarm["tracking"] = requested_app_ids
+		del alarm["app_tokens"]
 
-		alarm_id = db.alarms.insert({
-			"user": user["_id"]
-			"name": name,
-			"receivers": receivers, 
-			"note": note,
-			"limit": limit,
-			"tracking": requested_apps
-			})
-		return alarm_id
-	else:
-		return None
+	if "name" not in alarm:
+		return 60
+	if "receivers" not in alarm:
+		return 61
+	if "limit" not in alarm:
+		alarm["limit"] = 1
+	alarm_id = db.alarms.insert(alarm)
+	return alarm_id
+
 
 
 def get_alarms(credential_id):
-	result = list(db.users.find({"credential_id": credential_id}))
-	if result:
-		user = result[0]
-	alarms = list(db.alarms.find({"user": user["_id"]}, {"_id": 0}))
-	return alarms
+	user = db.users.find_one({"credential_id": credential_id})
+	if user:
+		alarms = list(db.alarms.find({"user": user["_id"]}, {"_id": 0}))
+		return alarms
+	else:
+		return 36
+		pass
 
 
 def delete_alarm(credential_id, alarm_id):
 	user = list(db.users.find({"credential_id": credential_id}))
-	if user:
-		db.alarms.delete({"user": user["_id"], "alarm_id": alarm_id})
-		return True
-	return False
+	if not user:
+		return 35
+	result = db.alarms.delete({"user": user["_id"], "alarm_id": alarm_id})
+	if result["n"] == 1:
+		return 20
+	else:
+		return 65

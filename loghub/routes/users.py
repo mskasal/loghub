@@ -1,25 +1,8 @@
 from flask import request, jsonify
 from loghub import app
 from loghub.modules import users
-
-generic_responses = {
-	19: {"status": {"code": 19, "message": "Unexpected error. We are warned."}}
-	20: {"status": {"code": 20, "message": "Success."}}
-	}
-
-users_responses = {
-	31: {"status": {"code": 31, "message": "Incorrect email or password."}}
-	32: {"status": {"code": 32, "message": "That user already registered."}}
-	33: {"status": {"code": 33, "message": "Email required."}}
-	34: {"status": {"code": 34, "message": "Email is invalid."}}
-	35: {"status": {"code": 35, "message": "CREDENTIAL_ID required."}}
-	36: {"status": {"code": 36, "message": "CREDENTIAL_ID is invalid."}} # was duplicate of 25, then changed.
-	37: {"status": {"code": 37, "message": "Password required."}}
-	38: {"status": {"code": 38, "message": "Password is invalid."}}
-	39: {"status": {"code": 39, "message": "Verification code is invalid."}}
-
-	}
-
+from loghub.routes.responses import generic_responses, users_responses
+from functools import wraps
 
 def jsonize_request():
 	datatype = request.headers.get("Content-Type")
@@ -33,18 +16,20 @@ def jsonize_request():
 
 
 def check_email(f):
-	def wrapped(*args, **kwargs):
+	@wraps(f)
+	def wrapped1(*args, **kwargs):
 		data = jsonize_request()
 		if "email" not in data:
 			return jsonify(users_responses[33])
 		elif "@" not in data["email"] or "." not in data["email"]:
 			return jsonify(users_responses[34])
 		return f(*args, **kwargs)
-	return wrapped
+	return wrapped1
 
 
 def check_password(f):
-	def wrapped(*args, **kwargs):
+	@wraps(f)
+	def wrapped2(*args, **kwargs):
 		data = jsonize_request()
 		if "password" not in data:
 			return 37
@@ -52,15 +37,14 @@ def check_password(f):
 			return jsonify(users_responses[38])
 		else:
 			return f(*args, **kwargs)
-	return wrapped
+	return wrapped2
 
 
 @app.route('/API/v1/users', methods=['POST'])
 @check_email
 @check_password
 def create_user():
-	data = dict((each.split('=') for each in request.data.decode().split('&')))
-	print(data)
+	data = jsonize_request()
 	module_response = users.create_user(data["email"], data["password"])
 	
 	if isinstance(module_response, str):
