@@ -3,7 +3,6 @@ from loghub import app
 from loghub.modules import logs
 
 
-
 generic_responses = {
     19: {"status": {"code": 19, "message": "Unexpected error. We are warned."}}
     20: {"status": {"code": 20, "message": "Success."}}
@@ -36,7 +35,6 @@ def check_credential_id(f):
         return f(*args, **kwargs)
     return wrapped1
 
-
 def check_app_token(f):
     @wrapps(f)
     def wrapped2(*args, **kwargs):
@@ -46,18 +44,30 @@ def check_app_token(f):
         return f(*args, **kwargs)
     return wrapped2
 
-
 @app.route('API/v1/applications/<APP_TOKEN>/', methods='POST')
 @check_credential_id
 def logging():
-    data =dict((each.split('=') for each in request.data.split()))
+    data =dict((each.split('=') for each in request.data.split('&')))
     module_response = logs.logging(data[0])
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
-
     if module_response == 20:
         return jsonify(generic_responses[20])
+    if isinstance(module_response, int):
+        return jsonify(log_responses[module_response])
+
+@app.route('/API/v1/logs')
+def query_log():
+    data=dict((each.split('=') for each in request.data.split('&')))    
+    module_response = logs.query_log(data[0],data[1],data[2],data[3],data[4])
+    if isinstance(module_response, list):
+        response["data"] = {}
+        response["data"]["entries"] = module_response
+        return response
 
     if isinstance(module_response, int):
         return jsonify(log_responses[module_response])
+
+    if not isinstance(module_response, int):
+        return jsonify(generic_responses[19])
 

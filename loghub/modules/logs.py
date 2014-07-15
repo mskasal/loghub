@@ -1,4 +1,5 @@
 from loghub.storage import db
+from privilleges import get_user_apps
 
 
 collection_name = "logs"
@@ -22,12 +23,16 @@ def logging(APP_TOKEN, entry):
         return 52
 
 
-def query_log(APP_TOKENS, query_limit=100,
+def query_log(credential_id, APP_TOKENS=None, query_limit=100,
             sorted_by= -1, keyword=None,
             level=None, newer_than=None, older_than=None
             ):
     if not APP_TOKENS:
-        return 53
+        user = db["users"].find_one({
+                "credential_id":credential_id
+                })
+        user_id = user["_id"]
+        APP_TOKENS = get_user_apps(user_id)
 
     query = {}
 
@@ -59,20 +64,4 @@ def query_log(APP_TOKENS, query_limit=100,
         for entry in log_entries:
             result.append(entry)
 
-
     return result
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
