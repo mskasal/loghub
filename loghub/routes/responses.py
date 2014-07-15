@@ -22,3 +22,23 @@ alarm_responses = {
 	63: {"status": {"code": 63, "message": "Alpay says Some apps are not usable."}},
 	64: {"status": {"code": 64, "message": "Alpay says alarm_id is not valid."}}
 	}	
+
+log_responses = {
+    47: {"status": {"code": 47, "message": "APP_TOKEN is required"}},
+    51: {"status": {"code": 51, "message": "Couldn't find any logs"}},
+    52: {"status": {"code": 52, "message": "Couldn't write the log to database"}},
+    53: {"status": {"code": 53, "message": "There isn't any APP_TOKEN for query"}},
+    54: {"status": {"code": 54, "message": "Couldn't find any logs for these criterias"}}
+}
+applications_responses = {
+	41: {"status": {"code": 41, "message": "Name and credential id required"}},
+	42: {"status": {"code": 42, "message": "Name required"}},
+	43: {"status": {"code": 43, "message": "Credential id required"}},
+	44: {"status": {"code": 44, "message": "Invalid Credential id "}},
+	45: {"status": {"code": 45, "message": "Couldn't find any registered apps"}},
+	46: {"status": {"code": 46, "message": "Invalid app_id "}},
+	47: {"status": {"code": 47, "message": "Invalid APP_TOKEN"}},
+	48: {"status": {"code": 48, "message": "Not authorized"}},
+	49: {"status": {"code": 49, "message": "APP_TOKEN and Credential_id required"}},
+	50: {"status": {"code": 50, "message": "Couldn't update APP_TOKEN"}}    
+}

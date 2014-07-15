@@ -1,26 +1,8 @@
 from flask import request, jsonify
 from loghub import app
 from loghub.modules import applications
+from loghub.routes.responses import generic_responses, application_responses
 
-
-generic_responses = {
-    19: {"status": {"code": 19, "message": "Unexpected error. We are warned."}}
-    20: {"status": {"code": 20, "message": "Success."}}
-    }
-
-
-applications_responses = {
-41: {"status": {"code": 41, "message": "Name and credential id required"}},
-42: {"status": {"code": 42, "message": "Name required"}},
-43: {"status": {"code": 43, "message": "Credential id required"}},
-44: {"status": {"code": 44, "message": "Invalid Credential id "}},
-45: {"status": {"code": 45, "message": "Couldn't find any registered apps"}},
-46: {"status": {"code": 46, "message": "Invalid app_id "}},
-47: {"status": {"code": 47, "message": "Invalid APP_TOKEN"}},
-48: {"status": {"code": 48, "message": "Not authorized"}},
-49: {"status": {"code": 49, "message": "APP_TOKEN and Credential_id required"}},
-50: {"status": {"code": 50, "message": "Couldn't update APP_TOKEN"}}    
-}
 
 def jsonize_request():
     datatype = request.headers.get("Content-Type")
