@@ -67,8 +67,7 @@ def create_user():
 @check_email
 @check_password
 def get_user():
-	data = dict((each.split('=') for each in request.data.decode().split('&')))
-	print(data)
+	data = jsonize_request()
 	module_response = users.get_user(data["email"], data["password"])
 
 	if not isinstance(module_response, dict):
@@ -86,7 +85,7 @@ def get_user():
 @check_email
 @check_password
 def reset_credential_id():
-	data = jsonize_request(request.data.decode())
+	data = jsonize_request()
 	module_response = users.reset_credential_id(data["email"], data["password"])
 	if isinstance(module_response, int):
 		return jsonify(users_responses[module_response])
@@ -102,22 +101,26 @@ def reset_credential_id():
 @check_password
 def change_user_password():
 	credential_line = request.headers.get("Authorization", None)
+	
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
+	
 	data = jsonize_request()
+	
 	if "new_password" not in data:
 		return jsonify(users_responses[37])
 	module_response = users.change_user_password(credential_id,
 												 data["password"], 
 												 data["new_password"])
+	print module_response
 	if module_response == 20:
-		return generic_responses[20]
+		return jsonify(generic_responses[20])
 	else:
-		return users_responses[module_response]
+		return jsonify(users_responses[module_response])
 
 @app.route('/API/v1/user/email', methods=['PUT'])
-@check_password
+#@check_password
 def change_user_email():
 	credential_line = request.headers.get("Authorization", None)
 	if not credential_line:
@@ -128,6 +131,7 @@ def change_user_email():
 		return jsonify(users_responses[33])
 	elif "@" not in data["email"] or "." not in data["email"]:
 		return jsonify(users_responses[34])
+	
 	module_response = users.change_user_email(credential_id,
 											  data["email"],
 											  data["new_email"])
@@ -138,6 +142,7 @@ def change_user_email():
 @app.route('/API/v1/auth/remember', methods=['POST'])
 @check_email
 def remember_account():
+	data = jsonize_request()
 	module_response = users.remember_account(data["email"])
 	if module_response == 20:
 		return jsonify(generic_responses[20])
@@ -154,10 +159,10 @@ def reset_user_password():
 	if "new_password" not in data:
 		return jsonify(users_response[37])
 
-	module_response = reset_user_password(data["email"], 
+	module_response = users.reset_user_password(data["email"], 
 										  data["new_password"],
 										  data["code"])
 	if module_response == 20:
-		return generic_responses[20]
+		return jsonify(generic_responses[20])
 	else:
-		return users_responses[module_response]
+		return jsonify(users_responses[module_response])
