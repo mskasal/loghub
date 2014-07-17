@@ -27,7 +27,6 @@ def register_alarm(credential_id, alarm):
 	return alarm_id
 
 
-
 def get_alarms(credential_id):
 	user = db.users.find_one({"credential_id": credential_id})
 	if user:
