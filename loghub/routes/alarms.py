@@ -78,7 +78,7 @@ def get_alarms():
 		response["data"] = module_response
 		return jsonify(response)
 
-@app.route('/API/v1/alarms/<alarm_id>')
+@app.route('/API/v1/alarms/<alarm_id>', methods=['DELETE'])
 def delete_alarm(alarm_id):
 	credential_line = request.headers.get("Authorization", None)
 	if not credential_line:
