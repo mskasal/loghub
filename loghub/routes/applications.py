@@ -14,42 +14,16 @@ def jsonize_request():
         return abort(400)
     return data
 
-def check_credential_id(f):
-    @wrapps(f)
-    def wrapped1(*args, **kwargs):
-        data = jsonize_request()
-        if "credential_id" not in data:
-            return jsonify(applications_responses[43])
-        return f(*args, **kwargs)
-    return wrapped1
-
-
-def check_app_token(f):
-    @wrapps(f)
-    def wrapped2(*args, **kwargs):
-        data = jsonize_request()
-        if "APP_TOKEN" not in data:
-            return jsonify(applications_responses[47])
-        return f(*args, **kwargs)
-    return wrapped2
-
-
-def check_name(f):
-    @wrapps(f)
-    def wrapped3(*args, **kwargs):
-        data = jsonize_request()
-        if "name" not in data:
-            return jsonify(applications_responses[42])
-        return f(*args, **kwargs)
-    return wrapped3
-
-
 
 @app.route('/API/v1/applications', methods=['POST'])
-@check_name
 def register_app():
-    data = dict((each.split('=') for each in request.data.split('&')))
-    module_response = applications.register_app(data["name"],data["credential_id"])
+    credential = request.headers.get('Authorization',None)
+    credential_id = credential.split()[1]
+    if not credential_id:
+        return jsonify(applications_responses[47])
+    data = jsonize_request()
+    data = dict((each.split('=') for each in data.split('&')))
+    module_response = applications.register_app(data["name"],credential_id )
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
     
@@ -61,10 +35,12 @@ def register_app():
 
 
 @app.route('/API/v1/applications', methods=['GET'])
-@check_credential_id
 def get_apps():
-    data = dict((each.split('=') for each in request.data.split()))
-    module_response = applications.get_apps(data[0])
+    credential = request.headers.get('Authorization', None)
+    credential_id = credential.split()[1]
+    if not credential_id:
+        return jsonify(applications_responses[47])
+    module_response = applications.get_apps(credential_id)
     if module_response == 19:
         return jsonify(generic_responses[module_response])
     if isinstance(module_response, int):
@@ -78,11 +54,12 @@ def get_apps():
 
 
 @app.route('/API/v1/applications/<APP_TOKEN>',methods=['DELETE'])
-@check_credential_id
-@check_app_token
-def delete_apps():
-    data = dict((each.split('=') for each in request.data.split()))
-    module_response = applications.delete_apps(data[0],data[1])
+def delete_apps(APP_TOKEN):
+    credential = request.headers.get('Authorization', None)
+    credential_id = credential.split()[1]
+    if not credential_id:
+        return jsonify(applications_responses[47])
+    module_response = applications.delete_apps(APP_TOKEN, credential_id)
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
     if module_response == 20:
@@ -93,11 +70,12 @@ def delete_apps():
         return jsonify(generic_responses[19])
 
 @app.route('API/v1/applications/<APP_TOKEN>/token', methods=['PUT'])
-@check_credential_id
-@check_app_token
-def reset_app_token():
-    data = dict((each.split('=') for each in request.data.split()))
-    module_response = applications.reset_app_token(data[0],data[1])
+def reset_app_token(APP_TOKEN):
+    credential = request.headers.get('Authorization', None)
+    credential_id = credential.split()[1]
+    if not credential_id:
+        return jsonify(applications_responses[47])
+    module_response = applications.reset_app_token( APP_TOKEN, credential_id )
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
     if module_response == 20:
