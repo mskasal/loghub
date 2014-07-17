@@ -1,5 +1,5 @@
 from loghub.storage import db
-from privilleges import get_user_apps
+from loghub.modules.privileges import get_user_apps
 
 
 collection_name = "logs"

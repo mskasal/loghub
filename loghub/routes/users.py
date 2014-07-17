@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, abort
 from loghub import app
 from loghub.modules import users
 from loghub.routes.responses import generic_responses, users_responses
@@ -8,6 +8,7 @@ def jsonize_request():
 	datatype = request.headers.get("Content-Type")
 	if datatype == "application/x-www-form-urlencoded":
 		data = dict((each.split('=') for each in request.data.decode().split('&')))		
+		print(data)
 	elif datatype == "application/json":
 		data = request.json
 	else:
