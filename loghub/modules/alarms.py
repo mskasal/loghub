@@ -1,3 +1,5 @@
+from bson.objectid import ObjectId
+
 from loghub.storage import db
 
 
@@ -5,7 +7,9 @@ def register_alarm(credential_id, alarm):
 	user = db.users.find_one({"credential_id": credential_id})
 	if not user:
 		return 36
+
 	valid_apps = db.privileges.find({"user_id": user["_id"]})
+	
 	if "app_tokens" not in alarm:
 		alarm["tracking"] = "any"
 	else:
@@ -23,14 +27,18 @@ def register_alarm(credential_id, alarm):
 		return 61
 	if "limit" not in alarm:
 		alarm["limit"] = 1
-	alarm_id = db.alarms.insert(alarm)
+	alarm["user"] = user["_id"]
+	alarm_id = str(db.alarms.insert(alarm))
 	return alarm_id
 
 
 def get_alarms(credential_id):
 	user = db.users.find_one({"credential_id": credential_id})
 	if user:
-		alarms = list(db.alarms.find({"user": user["_id"]}, {"_id": 0}))
+		alarms_data = db.alarms.find({"user": user["_id"]}) 
+		for alarm in alarms_data:
+			alarms.append(alarm)
+
 		return alarms
 	else:
 		return 36
@@ -38,10 +46,12 @@ def get_alarms(credential_id):
 
 
 def delete_alarm(credential_id, alarm_id):
-	user = list(db.users.find({"credential_id": credential_id}))
+	user = db.users.find_one({"credential_id": credential_id})
 	if not user:
 		return 35
-	result = db.alarms.delete({"user": user["_id"], "alarm_id": alarm_id})
+	print alarm_id
+	print str(user["_id"])
+	result = db.alarms.remove({"user": ObjectId(user["_id"]), "_id": ObjectId(alarm_id)})
 	if result["n"] == 1:
 		return 20
 	else:
