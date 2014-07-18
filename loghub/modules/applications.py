@@ -59,6 +59,7 @@ def get_apps(credential_id):
             })
         if not application:
             return 46
+        application["_id"] = str(application["_id"])
         app_list.append(application)
         
     return app_list

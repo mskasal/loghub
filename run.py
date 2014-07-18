@@ -5,6 +5,8 @@ from loghub.modules import users
 from loghub.modules import applications
 from loghub.modules import logs
 from loghub.routes import users
+from loghub.routes import logs
+from loghub.routes import applications
 
 
 if __name__ == '__main__':
