@@ -1,8 +1,10 @@
 from bson.objectid import ObjectId
-
 from loghub.storage import db
+from loghub.flask_celery import alarms as c 
 
 
+
+@c.task(name="loghub.modules.alarms.register_alarm")
 def register_alarm(credential_id, alarm):
 	user = db.users.find_one({"credential_id": credential_id})
 	if not user:
@@ -31,7 +33,7 @@ def register_alarm(credential_id, alarm):
 	alarm_id = str(db.alarms.insert(alarm))
 	return alarm_id
 
-
+@c.task(name="loghub.modules.alarms.get_alarms")
 def get_alarms(credential_id):
 	user = db.users.find_one({"credential_id": credential_id})
 	if user:
@@ -44,7 +46,7 @@ def get_alarms(credential_id):
 		return 36
 		pass
 
-
+@c.task(name="loghub.modules.alarms.delete_alarm")
 def delete_alarm(credential_id, alarm_id):
 	user = db.users.find_one({"credential_id": credential_id})
 	if not user:

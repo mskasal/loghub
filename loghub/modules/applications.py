@@ -5,12 +5,12 @@ import math
 
 from loghub.storage import db
 from privileges import*
-
+from loghub.flask_celery import applications as c 
 
 collection_name = "apps"
 coll = db[collection_name]
 
-
+@c.task(name="loghub.modules.applications.register_app")
 def register_app(name,credential_id):
     if not name and not credential_id:
         return 41
@@ -34,7 +34,7 @@ def register_app(name,credential_id):
     return 20
 
 
-
+@c.task(name="loghub.modules.applications.get_apps")
 def get_apps(credential_id):
     if not credential_id:
         return 43
@@ -64,7 +64,7 @@ def get_apps(credential_id):
         
     return app_list
 
-
+@c.task(name="loghub.modules.applications.delete_apps")
 def delete_apps(APP_TOKEN,credential_id):
     user = db["users"].find_one({
                 "credential_id":credential_id
@@ -86,7 +86,7 @@ def delete_apps(APP_TOKEN,credential_id):
     except:
         return 48
 
-    
+@c.task(name="loghub.modules.applications.reset_app_token")
 def reset_app_token(old_app_token,credential_id):
     if not old_app_token and  not credential_id:
         return 49

@@ -63,8 +63,10 @@ def register_alarm():
 	else:
 		level = []
 
-	module_response = alarms.register_alarm(credential_id=credential_id,
-											alarm=alarm)
+	module_response = alarms.register_alarm.apply_async( [credential_id, alarm],
+												queue="alarms",
+												routing_key="alarms"
+												).get()
 	if isinstance(module_response, str):
 		response = generic_responses[20].copy()
 		response["data"] = {"alarm_id": module_response}
@@ -83,16 +85,19 @@ def get_alarms():
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
-	module_response = alarms.get_alarms(credential_id)
+	response2 = alarms.get_alarms.apply_async([credential_id],
+										queue="alarms",
+										routing_key="alarms"
+										)
+	module_response = response2.get()
 
 	if isinstance(module_response, int):
 		if module_response == 36:
 			return users_responses[36]
 	else:
-		for alarm in module_response:                    #fixes jsonify issues if we don't do that json serializable error occurs
-			alarm["_id"] = str(alarm["_id"])
-		response = generic_responses[20].copy()
-		response["data"] = module_response
+		for alarm in module_response:                   
+			response = generic_responses[20].copy()
+			response["data"] = module_response
 		return jsonify(response)
 
 @app.route('/API/v1/alarms/<alarm_id>', methods=['DELETE'])
@@ -101,7 +106,10 @@ def delete_alarm(alarm_id):
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
-	module_response = alarms.delete_alarm(credential_id, alarm_id)
+	module_response = alarms.delete_alarm.apply_async([credential_id, alarm_id]
+												queue="alarms",
+												routing_key="alarms"
+												)
 	if module_response == 35:
 		return jsonify(users_responses[35])
 	elif module_response == 65:

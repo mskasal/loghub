@@ -27,7 +27,10 @@ def register_app():
     if not credential_id:
         return jsonify(applications_responses[47])
     data = jsonize_request()
-    module_response = applications.register_app(data["name"],credential_id )
+    module_response = applications.register_app.apply_async([data["name"],credential_id],
+                                                    queue="applications",
+                                                    routing_key="applications"
+                                                    ).get()
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
     
@@ -44,7 +47,10 @@ def get_apps():
     credential_id = credential.split()[1]
     if not credential_id:
         return jsonify(applications_responses[47])
-    module_response = applications.get_apps(credential_id)
+    module_response = applications.get_apps.apply_async([credential_id],
+                                                    queue="applications",
+                                                    routing_key="applications"
+                                                    ).get()
     if module_response == 19:
         return jsonify(generic_responses[module_response])
     if isinstance(module_response, int):
@@ -64,7 +70,10 @@ def delete_apps(APP_TOKEN):
     credential_id = credential.split()[1]
     if not credential_id:
         return jsonify(applications_responses[47])
-    module_response = applications.delete_apps(APP_TOKEN, credential_id)
+    module_response = applications.delete_apps.apply_async([APP_TOKEN, credential_id]
+                                                    queue="applications",
+                                                    routing_key="applications"
+                                                    ).get()
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
     if module_response == 20:
@@ -80,7 +89,10 @@ def reset_app_token(APP_TOKEN):
     credential_id = credential.split()[1]
     if not credential_id:
         return jsonify(applications_responses[47])
-    module_response = applications.reset_app_token( APP_TOKEN, credential_id )
+    module_response = applications.reset_app_token.apply_async( [APP_TOKEN, credential_id],
+                                                        queue="applications",
+                                                        routing_key="applications"
+                                                        ).get()
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
     if module_response == 20:

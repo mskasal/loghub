@@ -5,7 +5,9 @@ from math import floor
 from loghub.storage import db
 from loghub.emails import send_email
 import datetime
+from loghub.flask_celery import users as c 
 
+@c.task(name="loghub.modules.users.create_user")
 def create_user(email, password):
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
@@ -20,7 +22,7 @@ def create_user(email, password):
 		return 32
 	return credential_id
 
-
+@c.task(name="loghub.modules.users.get_user")
 def get_user(email, password):
 	user = db.users.find_one(
 		{"email": email, "password": password}, 
@@ -34,7 +36,7 @@ def get_user(email, password):
 	else:
 		return 31
 
-
+@c.task(name="loghub.modules.users.change_user_password")
 def change_user_password(credential_id, password, new_password):
 	result = db.users.update({"credential_id": credential_id,
 	 				 			"password": password}, 
@@ -44,7 +46,7 @@ def change_user_password(credential_id, password, new_password):
 		return 20
 	else:
 		return 31 
-
+@c.task(name="loghub.modules.users.change_user_email")
 def change_user_email(credential_id, password, new_email):
 	result = db.users.update({"credential_id": credential_id, 
 							  "password": password}, 
@@ -52,7 +54,7 @@ def change_user_email(credential_id, password, new_email):
 							 upsert=False)
 	return 20
 
-
+@c.task(name="loghub.modules.users.remember_account")
 def remember_account(email):
 	user = db.users.find_one({"email": email})
 	if user:
@@ -71,7 +73,7 @@ def remember_account(email):
 	else:
 		return 31
 
-
+@c.task(name="loghub.modules.users.reset_user_password")
 def reset_user_password(email, new_password, code):
 	response = db.users.update({"email": email}, 
 			{"$set": {"password": new_password}}, 
@@ -81,7 +83,7 @@ def reset_user_password(email, new_password, code):
 	else:
 		return 31
 
-
+@c.task(name="loghub.modules.users.reset_credential_id")
 def reset_credential_id(email, password):
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()

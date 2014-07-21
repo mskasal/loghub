@@ -49,7 +49,10 @@ def check_password(f):
 @check_password
 def create_user():
 	data = jsonize_request()
-	module_response = users.create_user(data["email"], data["password"])
+	module_response = users.create_user.apply_async([data["email"], data["password"]],
+												queue="users",
+												routing_key="users"
+												).get()
 	
 	if isinstance(module_response, str):
 		response = generic_responses[20].copy()
@@ -68,7 +71,10 @@ def create_user():
 @check_password
 def get_user():
 	data = jsonize_request()
-	module_response = users.get_user(data["email"], data["password"])
+	module_response = users.get_user.apply_async([data["email"], data["password"]],
+											queue="users",
+											routing_key="users"
+											).get()
 
 	if not isinstance(module_response, dict):
 		if isinstance(module_response, int):
@@ -86,7 +92,10 @@ def get_user():
 @check_password
 def reset_credential_id():
 	data = jsonize_request()
-	module_response = users.reset_credential_id(data["email"], data["password"])
+	module_response = users.reset_credential_id.apply_async([data["email"], data["password"]],
+													queue="users",
+													routing_key="users"
+													).get()
 	if isinstance(module_response, int):
 		return jsonify(users_responses[module_response])
 	elif isinstance(module_response, dict):
@@ -110,17 +119,18 @@ def change_user_password():
 	
 	if "new_password" not in data:
 		return jsonify(users_responses[37])
-	module_response = users.change_user_password(credential_id,
+	module_response = users.change_user_password.apply_async([credential_id,
 												 data["password"], 
-												 data["new_password"])
-	print module_response
+												 data["new_password"]],
+												 queue="users",
+												 routing_key="users"
+												 ).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
 	else:
 		return jsonify(users_responses[module_response])
 
 @app.route('/API/v1/user/email', methods=['PUT'])
-#@check_password
 def change_user_email():
 	credential_line = request.headers.get("Authorization", None)
 	if not credential_line:
@@ -132,9 +142,12 @@ def change_user_email():
 	elif "@" not in data["email"] or "." not in data["email"]:
 		return jsonify(users_responses[34])
 	
-	module_response = users.change_user_email(credential_id,
+	module_response = users.change_user_email.apply_async([credential_id,
 											  data["email"],
-											  data["new_email"])
+											  data["new_email"]],
+											  queue="users",
+											  routing_key="users"
+											  ).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
 
@@ -143,7 +156,10 @@ def change_user_email():
 @check_email
 def remember_account():
 	data = jsonize_request()
-	module_response = users.remember_account(data["email"])
+	module_response = users.remember_account.apply_async([data["email"]],
+													queue="users",
+													routing_key="users"
+													).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
 	else:
@@ -159,9 +175,12 @@ def reset_user_password():
 	if "new_password" not in data:
 		return jsonify(users_response[37])
 
-	module_response = users.reset_user_password(data["email"], 
+	module_response = users.reset_user_password.apply_async([data["email"], 
 										  data["new_password"],
-										  data["code"])
+										  data["code"]],
+										  queue="users",
+										  routing_key="users"
+										  ).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
 	else:

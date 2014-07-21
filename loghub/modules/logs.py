@@ -1,12 +1,13 @@
 from loghub.storage import db
 from loghub.modules.privileges import get_user_apps
+from loghub.flask_celery import logs as c
 
 
 collection_name = "logs"
 coll = db[collection_name]
 
 
-
+@c.task(name="loghub.modules.logs.logging")
 def logging(APP_TOKEN, entry):
     if not APP_TOKEN:
         return 47
@@ -22,7 +23,7 @@ def logging(APP_TOKEN, entry):
     except:
         return 52
 
-
+@c.task(name="loghub.modules.logs.query_log")
 def query_log(credential_id, APP_TOKENS=None, query_limit=100,
             sorted_by= -1, keyword=None,
             level=None, newer_than=None, older_than=None

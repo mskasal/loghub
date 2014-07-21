@@ -26,7 +26,11 @@ def logging(APP_TOKEN):
         return jsonify(log_responses[47])
 
     entry = jsonize_request()
-    module_response = logs.logging(APP_TOKEN,entry)
+    module_response = logs.logging.apply_async(
+                                            [APP_TOKEN,entry],
+                                            queue="logs",
+                                            routing_key="logs"
+                                            ).get()
 
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
@@ -44,11 +48,14 @@ def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
     if not credential_id:
         return jsonify(log_responses[47])
 
-    module_response = logs.query_log(credential_id,
-                                        query_limit=limit, level=level,
-                                        keyword=keyword, newer_than=newerThan,
-                                        older_than=olderThan
-                                        )
+    module_response = logs.query_log.apply_async([ credential_id,
+                                        limit, level,
+                                        keyword, newerThan,
+                                        olderThan],
+                                        queue="logs",
+                                        routing_key="logs"
+                                        ).get()
+    
     if isinstance(module_response, list):
         response = {}
         response["data"] = {}
