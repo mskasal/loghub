@@ -17,7 +17,7 @@ alarms.conf.update(
     )
 
 
-applications = Celery("alarms", broker="amqp://localhost//",
+applications = Celery("applications", broker="amqp://localhost//",
                     backend= 'mongodb://localhost//'
                     )
 

@@ -53,7 +53,7 @@ def create_user():
 												queue="users",
 												routing_key="users"
 												).get()
-	
+		
 	if isinstance(module_response, str):
 		response = generic_responses[20].copy()
 		response["data"] = {"CREDENTIAL_ID": module_response}

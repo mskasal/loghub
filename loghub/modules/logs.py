@@ -1,6 +1,6 @@
 from loghub.storage import db
 from loghub.modules.privileges import get_user_apps
-from loghub.flask_celery import logs as c
+from loghub.workers.logs import logs as c
 
 
 collection_name = "logs"

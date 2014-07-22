@@ -1,6 +1,6 @@
 from bson.objectid import ObjectId
 from loghub.storage import db
-from loghub.flask_celery import alarms as c 
+from loghub.workers.alarms import alarms as c 
 
 
 

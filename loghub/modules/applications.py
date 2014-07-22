@@ -5,7 +5,7 @@ import math
 
 from loghub.storage import db
 from privileges import*
-from loghub.flask_celery import applications as c 
+from loghub.workers.applications import applications as c 
 
 collection_name = "apps"
 coll = db[collection_name]

@@ -18,6 +18,10 @@ def jsonize_request():
 	return data
 
 
+@app.route('/')
+def hello():
+	return "some string"
+
 
 @app.route('/API/v1/alarms', methods = ['POST'])
 def register_alarm():
@@ -106,7 +110,7 @@ def delete_alarm(alarm_id):
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
-	module_response = alarms.delete_alarm.apply_async([credential_id, alarm_id]
+	module_response = alarms.delete_alarm.apply_async([credential_id, alarm_id],
 												queue="alarms",
 												routing_key="alarms"
 												)

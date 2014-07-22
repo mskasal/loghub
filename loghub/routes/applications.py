@@ -70,7 +70,7 @@ def delete_apps(APP_TOKEN):
     credential_id = credential.split()[1]
     if not credential_id:
         return jsonify(applications_responses[47])
-    module_response = applications.delete_apps.apply_async([APP_TOKEN, credential_id]
+    module_response = applications.delete_apps.apply_async([APP_TOKEN, credential_id],
                                                     queue="applications",
                                                     routing_key="applications"
                                                     ).get()
