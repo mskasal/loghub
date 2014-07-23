@@ -50,9 +50,10 @@ def check_password(f):
 def create_user():
 	data = jsonize_request()
 	module_response = users.create_user.apply_async([data["email"], data["password"]],
-												queue="users",
-												routing_key="users"
+												queue="loghub",
+												routing_key="loghub"
 												).get()
+
 		
 	if isinstance(module_response, str):
 		response = generic_responses[20].copy()
@@ -72,8 +73,8 @@ def create_user():
 def get_user():
 	data = jsonize_request()
 	module_response = users.get_user.apply_async([data["email"], data["password"]],
-											queue="users",
-											routing_key="users"
+											queue="loghub",
+											routing_key="loghub"
 											).get()
 
 	if not isinstance(module_response, dict):
@@ -93,8 +94,8 @@ def get_user():
 def reset_credential_id():
 	data = jsonize_request()
 	module_response = users.reset_credential_id.apply_async([data["email"], data["password"]],
-													queue="users",
-													routing_key="users"
+													queue="loghub",
+													routing_key="loghub"
 													).get()
 	if isinstance(module_response, int):
 		return jsonify(users_responses[module_response])
@@ -122,8 +123,8 @@ def change_user_password():
 	module_response = users.change_user_password.apply_async([credential_id,
 												 data["password"], 
 												 data["new_password"]],
-												 queue="users",
-												 routing_key="users"
+												 queue="loghub",
+												 routing_key="loghub"
 												 ).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
@@ -133,6 +134,7 @@ def change_user_password():
 @app.route('/API/v1/user/email', methods=['PUT'])
 def change_user_email():
 	credential_line = request.headers.get("Authorization", None)
+	print credential_line
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
@@ -145,8 +147,8 @@ def change_user_email():
 	module_response = users.change_user_email.apply_async([credential_id,
 											  data["email"],
 											  data["new_email"]],
-											  queue="users",
-											  routing_key="users"
+											  queue="loghub",
+											  routing_key="loghub"
 											  ).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
@@ -157,8 +159,8 @@ def change_user_email():
 def remember_account():
 	data = jsonize_request()
 	module_response = users.remember_account.apply_async([data["email"]],
-													queue="users",
-													routing_key="users"
+													queue="loghub",
+													routing_key="loghub"
 													).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])
@@ -178,8 +180,8 @@ def reset_user_password():
 	module_response = users.reset_user_password.apply_async([data["email"], 
 										  data["new_password"],
 										  data["code"]],
-										  queue="users",
-										  routing_key="users"
+										  queue="loghub",
+										  routing_key="loghub"
 										  ).get()
 	if module_response == 20:
 		return jsonify(generic_responses[20])

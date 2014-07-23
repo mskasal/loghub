@@ -1,7 +1,6 @@
 from bson.objectid import ObjectId
 from loghub.storage import db
-from loghub.workers.alarms import alarms as c 
-
+from flask_celery import loghub_worker as c
 
 
 @c.task(name="loghub.modules.alarms.register_alarm")
@@ -9,7 +8,7 @@ def register_alarm(credential_id, alarm):
 	user = db.users.find_one({"credential_id": credential_id})
 	if not user:
 		return 36
-
+	print("nagber")
 	valid_apps = db.privileges.find({"user_id": user["_id"]})
 	
 	if "app_tokens" not in alarm:

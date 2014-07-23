@@ -2,14 +2,13 @@ from flask.ext.mail import Message
 from hashlib import md5
 from time import time
 from math import floor
-#from loghub.storage import db
+from loghub.storage import db
 #from loghub.emails import send_email
 import datetime
-import sys
-sys.path.append('../workers')
-from users_ import users as c 
 
-@c.task(name="users.create_user")
+from flask_celery import loghub_worker as c 
+
+@c.task(name='loghub.modules.users.create_user')
 def create_user(email, password):
 	credential_string = email + password + str(floor(time()))
 	credential_id = md5(credential_string.encode()).hexdigest()
@@ -21,7 +20,7 @@ def create_user(email, password):
 	try:
 		db.users.insert(user)
 	except:
-		return 32
+		return 20
 	return credential_id
 
 @c.task(name="loghub.modules.users.get_user")

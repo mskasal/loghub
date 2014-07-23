@@ -1,6 +1,6 @@
 from loghub.storage import db
 from loghub.modules.privileges import get_user_apps
-from loghub.workers.logs import logs as c
+from flask_celery import loghub_worker as c
 
 
 collection_name = "logs"
@@ -28,6 +28,9 @@ def query_log(credential_id, APP_TOKENS=None, query_limit=100,
             sorted_by= -1, keyword=None,
             level=None, newer_than=None, older_than=None
             ):
+    if not query_limit:
+        query_limit = 100
+
     if not APP_TOKENS:
         user = db["users"].find_one({
                 "credential_id":credential_id
@@ -36,6 +39,8 @@ def query_log(credential_id, APP_TOKENS=None, query_limit=100,
         APP_TOKENS = get_user_apps(user_id)
 
     query = {}
+    print APP_TOKENS
+
 
     if keyword is not None:
         query["log"] = {}

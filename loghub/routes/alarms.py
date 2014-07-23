@@ -12,15 +12,12 @@ def jsonize_request():
 		for each in data.keys():
 			data[each] = data[each][0]
 	elif datatype == "application/json":
+		print request.json		
 		data = dict(request.json)
+		print data
 	else:
-		abort(400)
+		return abort(400)
 	return data
-
-
-@app.route('/')
-def hello():
-	return "some string"
 
 
 @app.route('/API/v1/alarms', methods = ['POST'])
@@ -33,7 +30,9 @@ def register_alarm():
 	except:
 		abort(400)
 	alarm =  {}
+
 	data = jsonize_request()
+	print("jsonize bitti")
 	if "name" not in data.keys():
 		return jsonify(alarm_responses[60])
 	alarm["name"] = data["name"]
@@ -49,8 +48,10 @@ def register_alarm():
 
 	if "limit" in data.keys():
 		alarm["limit"] = data["limit"]
-	if alarm["limit"] < 1:
-		return jsonify(alarm_responses[62])
+	
+	if "limit" in alarm:
+		if alarm["limit"] < 1:
+			return jsonify(alarm_responses[62])
 
 	if "keywords" in data.keys():
 		alarm["keywords"] = data["keywords"].split(',')
@@ -61,15 +62,14 @@ def register_alarm():
 		alarm["note"] = data["note"]
 	else:
 		note = None
-
 	if "level" in data.keys():
 		alarm["level"] = data["level"].split()
 	else:
 		level = []
 
 	module_response = alarms.register_alarm.apply_async( [credential_id, alarm],
-												queue="alarms",
-												routing_key="alarms"
+												queue="loghub",
+												routing_key="loghub"
 												).get()
 	if isinstance(module_response, str):
 		response = generic_responses[20].copy()
@@ -90,8 +90,8 @@ def get_alarms():
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
 	response2 = alarms.get_alarms.apply_async([credential_id],
-										queue="alarms",
-										routing_key="alarms"
+										queue="loghub",
+										routing_key="loghub"
 										)
 	module_response = response2.get()
 
@@ -111,8 +111,8 @@ def delete_alarm(alarm_id):
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
 	module_response = alarms.delete_alarm.apply_async([credential_id, alarm_id],
-												queue="alarms",
-												routing_key="alarms"
+												queue="loghub",
+												routing_key="loghub"
 												)
 	if module_response == 35:
 		return jsonify(users_responses[35])

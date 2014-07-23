@@ -37,6 +37,13 @@ def get_user_apps(user_id):
     app_data = coll.find({"uid":user_id})
     app_id_list = []
     for app in app_data:
-        app_id_list.append(app["app_id"])
+        app_id_list.append((app["app_id"]))
+    
+    print app_id_list
+    apps = list(db["apps"].find({
+        "_id": {"$in": app_id_list }
+        }))
 
-    return app_id_list
+    app_tokens = [ app["APP_TOKEN"] for app in apps]
+    
+    return app_tokens

@@ -28,8 +28,8 @@ def logging(APP_TOKEN):
     entry = jsonize_request()
     module_response = logs.logging.apply_async(
                                             [APP_TOKEN,entry],
-                                            queue="logs",
-                                            routing_key="logs"
+                                            queue="loghub",
+                                            routing_key="loghub"
                                             ).get()
 
     if not isinstance(module_response, int):
@@ -52,14 +52,17 @@ def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
                                         limit, level,
                                         keyword, newerThan,
                                         olderThan],
-                                        queue="logs",
-                                        routing_key="logs"
+                                        queue="loghub",
+                                        routing_key="loghub"
                                         ).get()
-    
+    for entry in module_response:
+        entry["_id"] = str(entry["_id"])
+
     if isinstance(module_response, list):
-        response = {}
+        response = {}       
         response["data"] = {}
         response["data"]["entries"] = module_response
+    
         return jsonify(response)
 
     if module_response == 19:
