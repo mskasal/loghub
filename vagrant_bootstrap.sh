@@ -14,3 +14,4 @@ pip install celery pymongo flower ipython flask flask-mail
 
 #CELERY BROKER
 apt-get install -y rabbitmq-server
+apt-get install -y librabbitmq-dev

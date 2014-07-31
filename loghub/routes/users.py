@@ -6,14 +6,16 @@ from functools import wraps
 
 def jsonize_request():
 	datatype = request.headers.get("Content-Type", None)
+	print datatype
 	if not datatype:
 		abort(404)
 	elif datatype == "application/x-www-form-urlencoded":
 		data = dict(request.form)
+		print data
 		for each in data.keys():
 			data[each] = data[each][0]
 	elif datatype == "application/json":
-		data = dict(request.json)
+		data = dict(request.json)	
 	else:
 		abort(400)
 	return data

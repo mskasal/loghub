@@ -23,13 +23,15 @@ def jsonize_request():
 @app.route('/API/v1/applications', methods=['POST'])
 def register_app():
     credential = request.headers.get('Authorization',None)
+    print credential
     credential_id = credential.split()[1]
     if not credential_id:
         return jsonify(applications_responses[47])
     data = jsonize_request()
+    print data
     module_response = applications.register_app.apply_async([data["name"],credential_id],
-                                                    queue="loghub_worker",
-                                                    routing_key="loghub_worker"
+                                                    queue="loghub",
+                                                    routing_key="loghub"
                                                     ).get()
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
@@ -48,8 +50,8 @@ def get_apps():
     if not credential_id:
         return jsonify(applications_responses[47])
     module_response = applications.get_apps.apply_async([credential_id],
-                                                    queue="loghub_worker",
-                                                    routing_key="loghub_worker"
+                                                    queue="loghub",
+                                                    routing_key="loghub"
                                                     ).get()
     if module_response == 19:
         return jsonify(generic_responses[module_response])
