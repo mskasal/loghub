@@ -43,8 +43,18 @@ def get_alarms(credential_id):
 		return alarms
 	else:
 		return 36
-		pass
 
+@c.task(name="loghub.modules.alarms.get_alarm_by_id")
+def get_alarm_by_id(credential_id, alarm_id):
+	user = db.users.find_one({"credential_id": credential_id})
+	if not user:
+		return 36
+	alarm = db.alarms.find_one({"user": user["_id"], "alarm_id": alarm_id},
+								{"_id": 0})
+	if not alarm:
+		return 65
+	return alarm
+	
 @c.task(name="loghub.modules.alarms.delete_alarm")
 def delete_alarm(credential_id, alarm_id):
 	user = db.users.find_one({"credential_id": credential_id})

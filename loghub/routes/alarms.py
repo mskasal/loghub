@@ -89,11 +89,10 @@ def get_alarms():
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
-	response2 = alarms.get_alarms.apply_async([credential_id],
+	module_response = alarms.get_alarms.apply_async([credential_id],
 										queue="loghub",
 										routing_key="loghub"
-										)
-	module_response = response2.get()
+										).get()
 
 	if isinstance(module_response, int):
 		if module_response == 36:
@@ -103,6 +102,26 @@ def get_alarms():
 			response = generic_responses[20].copy()
 			response["data"] = module_response
 		return jsonify(response)
+
+@app.route('/API/v1/alarms/<alarm_id>' methods=['GET'])
+def get_alarm_by_id(alarm_id):
+	credential_line = request.headers.get("Authorization", None)
+	if not credential_line:
+		return jsonify(users_responses[35])
+	credential_id = credential_line.split()[1]
+	module_response = alarms.get_alarm_by_id.apply_async([credential_id, alarm_id],
+										queue="loghub",
+										routing_key="loghub"
+										).get()
+	if isinstance(modules, int):
+		if module_response < 70 and module_response >= 60:
+			return alarm_responses[module_response]
+	else:
+		response = generic_responses[20].copy()
+		response["data"]["alarm"] = module_response
+		return jsonify(response)
+
+
 
 @app.route('/API/v1/alarms/<alarm_id>', methods=['DELETE'])
 def delete_alarm(alarm_id):

@@ -21,6 +21,7 @@ alarm_responses = {
 	62: {"status": {"code": 62, "message": "Limit must be a positive integer"}},
 	63: {"status": {"code": 63, "message": "Some apps are not usable."}},
 	64: {"status": {"code": 64, "message": "Alarm_id is not valid."}}
+	65: {"status": {"code": 65, "message": "You do not have an alarm with that ID."}}
 	}	
 
 log_responses = {
