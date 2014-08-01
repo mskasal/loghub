@@ -2,7 +2,7 @@ import time
 from datetime import datetime
 import hashlib
 import math
-
+from bson.objectid import ObjectId
 from loghub.storage import db
 from privileges import*
 from flask_celery import loghub_worker as c
@@ -47,16 +47,20 @@ def get_apps(credential_id):
         return 44
 
     user_id = user["_id"]
+    
     app_ids = get_user_apps(user_id)
+    
 
     if not app_ids:
         return 45 
 
     app_list = []
     for app_id in app_ids:
+        print app_id
         application = coll.find_one({
-            "_id":app_id
+            "_id":ObjectId(app_id)
             })
+       
         if not application:
             return 46
         application["_id"] = str(application["_id"])

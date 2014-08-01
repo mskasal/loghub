@@ -113,7 +113,7 @@ def delete_alarm(alarm_id):
 	module_response = alarms.delete_alarm.apply_async([credential_id, alarm_id],
 												queue="loghub",
 												routing_key="loghub"
-												)
+												).get()
 	if module_response == 35:
 		return jsonify(users_responses[35])
 	elif module_response == 65:

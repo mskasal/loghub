@@ -37,7 +37,9 @@ def register_app():
         return jsonify(generic_responses[19])
     
     if module_response == 20:
-        return jsonify(generic_responses[module_response])
+        response = generic_responses[20].copy()
+        response["data"] = module_response
+        return jsonify(response)
 
     else:
         return jsonify(applications_responses[module_response])
@@ -45,6 +47,7 @@ def register_app():
 
 @app.route('/API/v1/applications', methods=['GET'])
 def get_apps():
+    print "seeeeee"
     credential = request.headers.get('Authorization', None)
     credential_id = credential.split()[1]
     if not credential_id:
