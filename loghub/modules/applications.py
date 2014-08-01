@@ -33,6 +33,28 @@ def register_app(name,credential_id):
     add_user_to_app(user_id,app_id,"admin")
     return 20
 
+@c.task(name="loghub.modules.applications.get_app")
+def get_app(credential_id, APP_TOKEN):
+    app = coll.find_one({
+                        "APP_TOKEN": APP_TOKEN
+                        })
+    if not app:
+        return 47
+    app_id = app["_id"]
+   
+    user = db["users"].find_one({
+                "credential_id":credential_id
+                })
+    user_id = user["_id"]
+   
+
+    if check_user(user_id,app_id):
+        app["_id"] = str(app["_id"])
+        return app
+
+    return 48
+
+
 
 @c.task(name="loghub.modules.applications.get_apps")
 def get_apps(credential_id):

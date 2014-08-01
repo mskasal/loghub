@@ -47,7 +47,6 @@ def register_app():
 
 @app.route('/API/v1/applications', methods=['GET'])
 def get_apps():
-    print "seeeeee"
     credential = request.headers.get('Authorization', None)
     credential_id = credential.split()[1]
     if not credential_id:
@@ -67,6 +66,31 @@ def get_apps():
         return jsonify(response)
     else:
         return jsonify(applications_responses[19])
+
+@app.route('/API/v1/applications/<APP_TOKEN>/', methods=['GET'])
+def get_app(APP_TOKEN):
+    credential = request.headers.get('Authorization', None)
+    credential_id = credential.split()[1]
+    if not credential_id:
+        return jsonify(applications_responses[47])
+
+    module_response = applications.get_app.apply_async([credential_id, APP_TOKEN],
+                                                    queue= "loghub",
+                                                    routing_key= "loghub"
+                                                    ).get()
+    
+    if module_response == 19:
+        return jsonify(generic_responses[module_response])
+    if isinstance(module_response, int):
+        return jsonify(applications_responses[module_response])
+
+    elif isinstance(module_response, dict):
+        response = generic_responses[20].copy()
+        response["data"] = module_response
+        return jsonify(response)
+    else:
+        return jsonify(applications_responses[19])
+
 
 
 @app.route('/API/v1/applications/<APP_TOKEN>/', methods=['DELETE'])

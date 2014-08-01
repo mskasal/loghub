@@ -1,4 +1,5 @@
 from loghub.storage import db
+from bson.objectid import ObjectId
 
 
 collection_name = "priviliges"
@@ -24,6 +25,16 @@ def is_user(app_id,user_id):
         return True
     else:
         return False
+
+def check_user(user_id,app_id):
+    app_privileges =  list(coll.find({"uid":user_id,
+                                    "app_id":app_id
+                                    }))
+    if any(str(user_id) in str(i["uid"]) for i in app_privileges):
+        return True
+    
+    return False
+
 
 def add_user_to_app(user_id, app_id, _type):
     return coll.insert({
