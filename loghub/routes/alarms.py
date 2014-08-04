@@ -103,7 +103,7 @@ def get_alarms():
 			response["data"] = module_response
 		return jsonify(response)
 
-@app.route('/API/v1/alarms/<alarm_id>' methods=['GET'])
+@app.route('/API/v1/alarms/<alarm_id>', methods=['GET'])
 def get_alarm_by_id(alarm_id):
 	credential_line = request.headers.get("Authorization", None)
 	if not credential_line:
