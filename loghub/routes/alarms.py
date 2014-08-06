@@ -1,6 +1,6 @@
 from flask import request, jsonify, abort
 from loghub import app
-from loghub.modules import alarms, users
+from loghub.modules import alarms
 from loghub.routes.responses import *
 
 def jsonize_request():
@@ -120,7 +120,6 @@ def get_alarm_by_id(alarm_id):
 		response = generic_responses[20].copy()
 		response["data"]["alarm"] = module_response
 		return jsonify(response)
-
 
 
 @app.route('/API/v1/alarms/<alarm_id>', methods=['DELETE'])

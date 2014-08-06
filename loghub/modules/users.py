@@ -18,10 +18,10 @@ def create_user(email, password):
 			"registered_at": record_time,
 			"credential_id": credential_id}
 	try:
-		db.users.insert(user)
+		db.users.insert(user.copy())
 	except:
-		return 20
-	return credential_id
+		return 32
+	return user
 
 @c.task(name="loghub.modules.users.get_user")
 def get_user(email, password):
