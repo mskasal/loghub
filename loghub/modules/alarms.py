@@ -36,6 +36,7 @@ def register_alarm(credential_id, alarm):
 def get_alarms(credential_id):
 	user = db.users.find_one({"credential_id": credential_id})
 	if user:
+		alarms=[]
 		alarms_data = db.alarms.find({"user": user["_id"]}) 
 		for alarm in alarms_data:
 			alarms.append(alarm)
