@@ -69,11 +69,14 @@ def create_user():
 			return jsonify(users_responses[30])
 
 
-@app.route('/API/v1/auth', methods=['POST'])
-@check_email
-@check_password
+@app.route('/API/v1/user/', methods=['GET'])
 def get_user():
-	data = jsonize_request()
+	data = dict(request.form)
+	if "email" not in data:
+			return jsonify(users_responses[33])
+		elif "@" not in data["email"] or "." not in data["email"]:
+			return jsonify(users_responses[34])
+
 	module_response = users.get_user.apply_async([data["email"], data["password"]],
 											queue="loghub",
 											routing_key="loghub"
@@ -136,7 +139,6 @@ def change_user_password():
 @app.route('/API/v1/user/email', methods=['PUT'])
 def change_user_email():
 	credential_line = request.headers.get("Authorization", None)
-	print credential_line
 	if not credential_line:
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
