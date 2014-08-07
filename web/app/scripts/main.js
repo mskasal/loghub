@@ -1,9 +1,9 @@
 require.config({
     paths: {
-        jquery: "vendor/jquery/dist/jquery",
+        jquery: "vendor/jquery/jquery",
         underscore: "vendor/underscore/underscore",
         backbone: "vendor/backbone/backbone",
-        bootstrap: "vendor/bootstrap/dist/js/bootstrap",
+        bootstrap: "vendor/bootstrap/js/bootstrap",
         text: 'vendor/requirejs-text/text'
     },
     shim: {
