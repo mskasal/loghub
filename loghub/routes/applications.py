@@ -33,13 +33,17 @@ def register_app():
                                                     queue="loghub",
                                                     routing_key="loghub"
                                                     ).get()
+    
+    
+    if isinstance(module_response, dict):
+        
+        response = generic_responses[20].copy()
+        module_response["_id"] = str(module_response["_id"])
+        response["data"] =  module_response        
+        return jsonify(response)
+
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
-    
-    if module_response == 20:
-        response = generic_responses[20].copy()
-        response["data"] = module_response
-        return jsonify(response)
 
     else:
         return jsonify(applications_responses[module_response])
@@ -103,10 +107,13 @@ def delete_apps(APP_TOKEN):
                                                     queue="loghub",
                                                     routing_key="loghub"
                                                     ).get()
-    if not isinstance(module_response, int):
-        return jsonify(generic_responses[19])
-    if module_response == 20:
-        return jsonify(generic_responses[20])
+    
+    if  isinstance(module_response, dict):
+        response = generic_responses[20].copy()
+        module_response["_id"] = str(module_response["_id"])
+        response["data"] =  module_response      
+        return jsonify(response)
+
     if isinstance(module_response, int):
         return jsonify(applications_responses[module_response])
     else:
@@ -122,9 +129,12 @@ def reset_app_token(APP_TOKEN):
                                                         queue="loghub",
                                                         routing_key="loghub"
                                                         ).get()
-    if not isinstance(module_response, int):
-        return jsonify(generic_responses[19])
-    if module_response == 20:
-        return jsonify(generic_responses[20])
+    
+    if isinstance(module_response, dict):
+        response = generic_responses[20].copy()
+        module_response["_id"] = str(module_response["_id"])
+        response["data"] =  module_response      
+        return jsonify(response)
+        
     if isinstance(module_response, int):
         return jsonify(applications_responses[module_response])

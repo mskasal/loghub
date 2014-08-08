@@ -20,18 +20,21 @@ def register_app(name,credential_id):
         return 43
 
     APP_TOKEN = hashlib.md5((name + credential_id).encode('utf8')).hexdigest()
-    app_id = coll.insert({
+    
+    app_data = {
             "name":name,
             "APP_TOKEN": APP_TOKEN,
             "createdAt": datetime.utcnow()
             }
-            )
+
+    app_id = coll.insert(app_data)
     user_id = db["users"].find_one({"credential_id":credential_id })["_id"]
     if not user_id:
         return 44
     
     add_user_to_app(user_id,app_id,"admin")
-    return 20
+    return app_data
+    
 
 @c.task(name="loghub.modules.applications.get_app")
 def get_app(credential_id, APP_TOKEN):
@@ -108,7 +111,7 @@ def delete_apps(APP_TOKEN,credential_id):
     try:
         if is_admin(app_id, user_id):
             coll.remove(app)
-            return 20
+            return app
     except:
         return 48
 
@@ -129,7 +132,7 @@ def reset_app_token(old_app_token,credential_id):
     record["APP_TOKEN"] = NEW_APP_TOKEN
     try:
         coll.save(record)
-        return 20
+        return record
 
     except:
         return 50
