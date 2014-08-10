@@ -21,6 +21,7 @@ def create_user(email, password):
 		db.users.insert(user.copy())
 	except:
 		return 32
+
 	return user
 
 @c.task(name="loghub.modules.users.get_user")
@@ -44,16 +45,16 @@ def change_user_password(credential_id, password, new_password):
 	 							{"$set": {"password": new_password}}, 
 	 							upsert=False)
 	if result["n"] > 0:
-		return 20
+		return db.users.find_one({"credential_id":credential_id})
 	else:
-		return 31 
+		return 31
 @c.task(name="loghub.modules.users.change_user_email")
 def change_user_email(credential_id, password, new_email):
 	result = db.users.update({"credential_id": credential_id, 
 							  "password": password}, 
 							 {"$set": {"email": new_email}},
 							 upsert=False)
-	return 20
+	return db.users.find_one({"credential_id":credential_id})
 
 @c.task(name="loghub.modules.users.remember_account")
 def remember_account(email):

@@ -32,11 +32,15 @@ def logging(APP_TOKEN):
                                             routing_key="loghub"
                                             ).get()
 
+    
+    if isinstance(module_response, dict):
+        response = generic_responses[20].copy()
+        response["data"] = entry
+        return jsonify(response)
+
     if not isinstance(module_response, int):
         return jsonify(generic_responses[19])
 
-    if module_response == 20:
-        return jsonify(generic_responses[20])
 
     if isinstance(module_response, int):
         return jsonify(log_responses[module_response])

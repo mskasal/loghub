@@ -19,7 +19,7 @@ def logging(APP_TOKEN, entry):
     
     try:
         coll.insert(entry)
-        return 20
+        return entry
     except:
         return 52
 
@@ -58,16 +58,18 @@ def query_log(credential_id, APP_TOKENS=None, query_limit=100,
         query["date"]["$lte"] = older_than
 
     result = []
-    
+
     for APP_TOKEN in APP_TOKENS:
         query["APP_TOKEN"] = APP_TOKEN
-        log_entries = coll.find(
+        log_entries = list(coll.find(
                         query
-                        ).sort("date",sorted_by).limit(query_limit)
+                        ).sort("date",sorted_by).limit(query_limit))
+               
         if not log_entries:
             return 54
 
         for entry in log_entries:
             result.append(entry)
+   
 
     return result
