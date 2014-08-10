@@ -4,10 +4,11 @@ require.config({
         underscore: "vendor/underscore/underscore",
         backbone: "vendor/backbone/backbone",
         bootstrap: "vendor/bootstrap/js/bootstrap",
+        logger: "vendor/logger/logger",
         text: 'vendor/requirejs-text/text'
     },
     shim: {
-        'bootstrap': {
+        bootstrap: {
             deps: ['jquery']
         },
         underscore: {
@@ -16,7 +17,8 @@ require.config({
         backbone: {
             deps: [
                 'underscore',
-                'jquery'
+                'jquery',
+                'logger'
             ],
             exports: 'Backbone'
         },
@@ -30,13 +32,15 @@ require.config({
 require([
     'backbone',
     'views/app',
-    'routers/router'
-], function(Backbone, AppView, Workspace) {
+    'routers/router',
+    'logger'
+], function(Backbone, AppView, Workspace, Logger) {
     /*jshint nonew:false*/
     // Initialize routing and start Backbone.history()
     new Workspace();
-    Backbone.history.start();
-
+    Backbone.history.start({});
+    Logger.start();
+    Logger.i("test loger")
     // Initialize the application view
     new AppView();
 });

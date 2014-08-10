@@ -6,6 +6,7 @@ define([], function() {
         // What is the enter key constant?
         ENTER_KEY: 13,
         ESCAPE_KEY: 27,
+        //  API URL
         apiURL: "http://192.168.33.10:5000"
     };
 });
