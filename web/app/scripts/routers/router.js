@@ -1,47 +1,106 @@
 /*global define*/
 define([
     'backbone',
-    'collections/collection',
+    'collections/applications',
     'common',
-    'models/loginStatus',
-    'views/login',
+    'models/loginModel',
+    'views/loginView',
     'models/dashboardModel',
-    'views/dashboard',
+    'views/dashboardView',
+    'views/applicationsView',
     'logger'
-], function(Backbone, Collection, Common, LoginStatusModel, LoginView, DashboardModel, DashboardView, Logger) {
+], function (Backbone, Applications, Common, LoginModel, LoginView, DashboardModel, DashboardView, ApplicationsView, Logger) {
     'use strict';
 
     var MyRouter = Backbone.Router.extend({
         routes: {
             '': 'index',
             'dashboard': 'dashboard',
+            'dashboard/applications': 'applications',
+            'dashboard/users': 'users',
             'login': 'login'
         },
-        initialize: function() {
-            console.log("routing")
+        initialize: function () {
+            if (!this.dashboardModel)
+                this.dashboardModel = new DashboardModel();
+            if (!this.dashboardView) {
+                this.dashboardView = new DashboardView({
+                    model: this.dashboardModel
+                });
+            }
+            this.dashboardView.render();
+            Logger.i("Route Initialized");
         },
         /**
          * Navigating dashboard, callback
          */
-        dashboard: function() {
-            Logger.i("Navigating Dashboard")
-            console.log("at dashboard")
-            var dashboardView = new DashboardView({
-                model: new DashboardModel()
-            });
+        dashboard: function (page) {
+
+            this.dashboardView.render();
+            Logger.i("Navigating Dashboard");
+            if (this[page])
+                this[page]();
+            else
+                this.dashboardView.navigateToSidebar("applications");
         },
-        index: function() {
-            console.log("index")
+        /**
+         * Navigating index, callback
+         */
+        index: function () {
+            Logger.i("Navigating Index");
         },
 
         /**
-         * Navigating to login page,callback
+         * Navigating login, callback
          */
-        login: function() {
-            console.log('login')
-            var loginView = new LoginView({
-                model: new LoginStatusModel()
+        login: function () {
+            if (!this.loginModel)
+                this.loginModel = new LoginModel();
+            if (!this.loginView)
+                this.loginView = new LoginView({
+                    model: this.loginModel
+                });
+            this.loginView.render();
+            Logger.i("Navigating Login");
+        },
+        /**
+         * Navigating applications, callback
+         */
+        applications: function () {
+            Applications.add([{
+
+                "id": "1",
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+            }, {
+
+                "id": "2",
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+            }, {
+
+                "id": "3",
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+            }]);
+
+            this.applicationsView = new ApplicationsView({
+                collection: Applications
             });
+
+            this.applicationsView.render();
+
+            Logger.i("Navigating Applications");
+        },
+        /**
+         * Navigating users, callback
+         */
+        users: function () {
+
+            Logger.i("Navigating Users");
         }
     });
 

@@ -1,8 +1,7 @@
 /*global define*/
 define([
-    'underscore',
     'backbone'
-], function(_, Backbone) {
+], function(Backbone) {
     'use strict';
 
     var MyModel = Backbone.Model.extend({
@@ -11,7 +10,6 @@ define([
             title: 'model title'
         },
         initialize: function() {
-            console.log(this.get("title"));
         }
 
     });

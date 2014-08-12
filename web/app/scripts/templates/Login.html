@@ -1,13 +1,17 @@
-<form role="form" id="loginForm">
-  <div class="form-group">
-    <label for="inputEmail">Email address</label>
-    <input type="email" class="form-control" id="inputEmail" placeholder="Enter email">
-  </div>
-  <div class="form-group">
-    <label for="inputPassword">Password</label>
-    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-  </div>
-  
-  <button type="submit" class="btn btn-default" id="loginButton">Login</button>
-</form>
-<div class="alert alert-error"></div>
+<div class="container">
+	<div class="text-center">
+		<h1>Loghub</h1>
+	</div>
+
+	<form class="form-signin" role="form">
+
+    	<input type="email" class="form-control" id="inputEmail" placeholder="Email address" required autofocus>
+    	<input type="password" class="form-control" id="inputPassword" placeholder="Password" required>
+    	<button class="btn btn-primary btn-block" id="loginButton" type="submit">Sign in</button>
+
+		<button class="btn btn-success btn-block">Register</button>
+
+	</form>
+
+	<div class="signStatus alert hidden"></div>
+</div>

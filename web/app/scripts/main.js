@@ -5,6 +5,7 @@ require.config({
         backbone: "vendor/backbone/backbone",
         bootstrap: "vendor/bootstrap/js/bootstrap",
         logger: "vendor/logger/logger",
+        mustache: "vendor/mustache/mustache",
         text: 'vendor/requirejs-text/text'
     },
     shim: {
@@ -17,8 +18,7 @@ require.config({
         backbone: {
             deps: [
                 'underscore',
-                'jquery',
-                'logger'
+                'bootstrap'
             ],
             exports: 'Backbone'
         },
@@ -38,9 +38,9 @@ require([
     /*jshint nonew:false*/
     // Initialize routing and start Backbone.history()
     new Workspace();
-    Backbone.history.start({});
+    Backbone.history.start();
     Logger.start();
-    Logger.i("test loger")
+    Logger.i("Main Initialized");
     // Initialize the application view
     new AppView();
 });

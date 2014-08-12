@@ -1,16 +1,19 @@
 /*global define*/
 define([
-    'backbone'
-], function(Backbone) {
+    'backbone',
+    'common',
+    'logger'
+], function(Backbone, Common, Logger) {
     'use strict';
 
     var DashboardModel = Backbone.Model.extend({
         // Default attributes for the model
         defaults: {
-            title: ' dashboard model title'
+            title: ' Dashboard'
         },
         initialize: function() {
-            console.log(this.get("title"));
+            Logger.i("Dashboard Model Initialize: " + this.defaults.title);
+
         }
 
     });

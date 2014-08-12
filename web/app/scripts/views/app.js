@@ -1,9 +1,10 @@
 /*global define*/
 define([
     'backbone',
-    'collections/collection',
-    'common'
-], function(Backbone, Collection, Common) {
+    'text!templates/app.html',
+    'common',
+    'logger'
+], function (Backbone, appTemplate, Common, Logger) {
     'use strict';
 
     // Our overall **AppView** is the top-level piece of UI.
@@ -12,8 +13,8 @@ define([
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
         el: '#app',
-        initialize: function() {
-            console.log("app view loaded")
+        initialize: function () {
+            Logger.i("App Initialized");
         }
     });
 

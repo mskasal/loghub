@@ -24,7 +24,7 @@ define([
         login: function() {
             var that = this;
 
-            var url = Common.apiURL + '/API/v1/users';
+            var url = Common.apiURL + '/API/v1/auth';
 
             return $.ajax({
                 url: url,
