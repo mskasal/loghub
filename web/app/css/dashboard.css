@@ -25,6 +25,11 @@ body {
   border: 0;
 }
 
+.navbar-fixed-top #alarms {
+  border: 1px solid rgb(83, 82, 82);
+  border-top: none;
+  border-bottom: none;
+}
 /*
  * Sidebar
  */
@@ -82,4 +87,7 @@ body {
 }
 .main .page-header {
   margin-top: 0;
+}
+.alarm{
+  width: 200px;
 }

@@ -46,9 +46,9 @@ define([
             this.collection.forEach(this.addOne, this);
         },
 
-        addOne: function () {
+        addOne: function (application) {
             var applicationView = new ApplicationView({
-                model: new ApplicationModel()
+                model: application
             });
             this.$el.prepend(applicationView.render().el);
         }

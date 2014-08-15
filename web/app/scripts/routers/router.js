@@ -9,7 +9,7 @@ define([
     'views/dashboardView',
     'views/applicationsView',
     'logger'
-], function (Backbone, Applications, Common, LoginModel, LoginView, DashboardModel, DashboardView, ApplicationsView, Logger) {
+], function(Backbone, Applications, Common, LoginModel, LoginView, DashboardModel, DashboardView, ApplicationsView, Logger) {
     'use strict';
 
     var MyRouter = Backbone.Router.extend({
@@ -20,7 +20,7 @@ define([
             'dashboard/users': 'users',
             'login': 'login'
         },
-        initialize: function () {
+        initialize: function() {
             if (!this.dashboardModel)
                 this.dashboardModel = new DashboardModel();
             if (!this.dashboardView) {
@@ -34,7 +34,7 @@ define([
         /**
          * Navigating dashboard, callback
          */
-        dashboard: function (page) {
+        dashboard: function(page) {
 
             this.dashboardView.render();
             Logger.i("Navigating Dashboard");
@@ -46,14 +46,14 @@ define([
         /**
          * Navigating index, callback
          */
-        index: function () {
+        index: function() {
             Logger.i("Navigating Index");
         },
 
         /**
          * Navigating login, callback
          */
-        login: function () {
+        login: function() {
             if (!this.loginModel)
                 this.loginModel = new LoginModel();
             if (!this.loginView)
@@ -66,26 +66,22 @@ define([
         /**
          * Navigating applications, callback
          */
-        applications: function () {
+        applications: function() {
             Applications.add([{
 
                 "id": "1",
-                "name": "MyUberWebsite",
-                "createdAt": "2014-03-18 20:16:32",
-                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+                "name": "1",
+                "createdAt": "1",
+                "APP_TOKEN": "1"
             }, {
 
                 "id": "2",
-                "name": "MyUberWebsite",
-                "createdAt": "2014-03-18 20:16:32",
-                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
-            }, {
-
-                "id": "3",
-                "name": "MyUberWebsite",
-                "createdAt": "2014-03-18 20:16:32",
-                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
-            }]);
+                "name": "2",
+                "createdAt": "2",
+                "APP_TOKEN": "2"
+            }], {
+                merge: true
+            });
 
             this.applicationsView = new ApplicationsView({
                 collection: Applications
@@ -98,7 +94,7 @@ define([
         /**
          * Navigating users, callback
          */
-        users: function () {
+        users: function() {
 
             Logger.i("Navigating Users");
         }

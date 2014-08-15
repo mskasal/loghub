@@ -1,5 +1,5 @@
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
+    <div class="container-fluid container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -10,34 +10,45 @@
             <a class="navbar-brand" href="">Loghub</a>
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#profile">Profile</a></li>
-                <li><a href="#settings">Settings</a></li>
+            <ul class="nav navbar-nav navbar-left">
                 <li>
-                    <a href="#" class="btn btn-default btn-link" id="notifications">
+                    <a href="#" class="btn btn-default btn-link" data-toggle="popover" id="alarms">
                         <span class="glyphicon glyphicon-bell"></span>
                     </a>
                 </li>
             </ul>
-            <form class="navbar-form navbar-right">
+            <form class="navbar-form navbar-left">
                 <input type="text" class="form-control" placeholder="Search...">
             </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#profile">
+                        <img src="https://avatars3.githubusercontent.com/u/2426680?v=2&s=40" height="20">
+                        <span>mskasal</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#addapp">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#logout">
+                        <span class="glyphicon glyphicon-off"></span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-3 col-md-2 sidebar" id="sidebar">
-	    	<ul class="nav nav-sidebar" role="tablist">
-	        	<li class="active"><a href="#applications" role="tab" data-toggle="tab" data-navigate="applications">Applications</a></li>
-	        	<li><a href="#users" role="tab" data-toggle="tab" data-navigate="users">Users</a></li>
-	    	</ul>
-    	</div>
-		<div class="tab-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-			<div class="tab-pane active" id="applications">1..</div>
-			<div class="tab-pane" id="users">...2</div>
-		</div>
-	</div>
+<div class="container-fluid container">
+    <div class="row">
+        asd
+    </div>
 </div>
