@@ -8,9 +8,8 @@ def register_alarm(credential_id, alarm):
 	user = db.users.find_one({"credential_id": credential_id})
 	if not user:
 		return 36
-	print("burdayım!")
+
 	valid_apps = db.privileges.find({"user_id": user["_id"]})
-	print("nasil tak diye burdayım, saniyede!")
 	defaults = {"name": None, 
 	"receivers": None, 
 	"app_tokens": "any", 
@@ -52,7 +51,6 @@ def get_alarms(credential_id):
 		for alarm in alarms_data:
 			alarm["user"] = str(alarm["user"])
 			alarms.append(alarm)
-		print(alarms)
 		return alarms
 	else:
 		return 36

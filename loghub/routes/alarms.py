@@ -28,13 +28,11 @@ def register_alarm():
 	except:
 		abort(400)
 	alarm = jsonize_request()
-	print("jsonize bitti")
 	
 	module_response = alarms.register_alarm.apply_async( [credential_id, alarm],
 												queue="loghub",
 												routing_key="loghub"
 												).get()
-	print(module_response)
 	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
 		response["data"] = module_response
