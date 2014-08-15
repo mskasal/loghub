@@ -10,5 +10,6 @@ from loghub.routes import applications
 
 
 if __name__ == '__main__':
-    app.run("192.168.33.10",
+    #app.run("192.168.33.10",
+    app.run("localhost",
             debug=True)

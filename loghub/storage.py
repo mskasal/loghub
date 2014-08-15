@@ -1,6 +1,7 @@
 import pymongo
 
 
-client = pymongo.MongoClient("192.168.1.122")
+client = pymongo.MongoClient("localhost")
+
 
 db = client["loghub_dev"]

@@ -21,7 +21,6 @@ def jsonize_request():
 def logging(APP_TOKEN):
     credential = request.headers.get('Authorization', None)
     credential_id = credential.split()[1]
-    print credential_id
     if not credential_id:
         return jsonify(log_responses[47])
 

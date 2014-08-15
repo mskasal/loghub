@@ -16,8 +16,8 @@ users_responses = {
 	}
 
 alarm_responses = {
-	60: {"status": {"code": 60, "message": "A name must be specified."}},
-	61: {"status": {"code": 61, "message": "Receivers required."}},
+	60: {"status": {"code": 60, "message": "dummy."}},
+	61: {"status": {"code": 61, "message": "Name and Receivers must be specified."}},
 	62: {"status": {"code": 62, "message": "Limit must be a positive integer"}},
 	63: {"status": {"code": 63, "message": "Some apps are not usable."}},
 	64: {"status": {"code": 64, "message": "Alarm_id is not valid."}},

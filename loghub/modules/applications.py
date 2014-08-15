@@ -4,7 +4,7 @@ import hashlib
 import math
 from bson.objectid import ObjectId
 from loghub.storage import db
-from privileges import*
+from loghub.modules.privileges import*
 from flask_celery import loghub_worker as c
 
 collection_name = "apps"
@@ -19,22 +19,22 @@ def register_app(name,credential_id):
     if not credential_id:
         return 43
 
-    APP_TOKEN = hashlib.md5((name + credential_id).encode('utf8')).hexdigest()
-    
-    app_data = {
+    APP_TOKEN = hashlib.md5((name + credential_id + str(math.floor(time.time()))).encode('utf8')).hexdigest()
+    app = {
             "name":name,
             "APP_TOKEN": APP_TOKEN,
             "createdAt": datetime.utcnow()
             }
+    app_id = coll.insert(app.copy())
 
-    app_id = coll.insert(app_data)
     user_id = db["users"].find_one({"credential_id":credential_id })["_id"]
     if not user_id:
         return 44
     
     add_user_to_app(user_id,app_id,"admin")
-    return app_data
-    
+
+    return app
+
 
 @c.task(name="loghub.modules.applications.get_app")
 def get_app(credential_id, APP_TOKEN):
@@ -81,7 +81,6 @@ def get_apps(credential_id):
 
     app_list = []
     for app_id in app_ids:
-        print app_id
         application = coll.find_one({
             "_id":ObjectId(app_id)
             })

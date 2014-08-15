@@ -39,7 +39,6 @@ def query_log(credential_id, APP_TOKENS=None, query_limit=100,
         APP_TOKENS = get_user_apps(user_id)
 
     query = {}
-    print APP_TOKENS
 
 
     if keyword is not None:
