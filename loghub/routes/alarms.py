@@ -12,9 +12,7 @@ def jsonize_request():
 		for each in data.keys():
 			data[each] = data[each][0]
 	elif datatype == "application/json":
-		print request.json		
 		data = dict(request.json)
-		print data
 	else:
 		return abort(400)
 	return data
@@ -29,51 +27,17 @@ def register_alarm():
 		credential_id = credential_line.split()[1]
 	except:
 		abort(400)
-	alarm =  {}
-
-	data = jsonize_request()
+	alarm = jsonize_request()
 	print("jsonize bitti")
-	if "name" not in data.keys():
-		return jsonify(alarm_responses[60])
-	alarm["name"] = data["name"]
 	
-	if "receivers" not in data.keys():
-		return jsonify(alarm_responses[61])
-	alarm["receivers"] = data["receivers"]
-
-	if "app_tokens" not in data.keys():
-		app_tokens = None
-	else:
-		alarm["app_tokens"] = list(data["app_tokens"])
-
-	if "limit" in data.keys():
-		alarm["limit"] = data["limit"]
-	
-	if "limit" in alarm:
-		if alarm["limit"] < 1:
-			return jsonify(alarm_responses[62])
-
-	if "keywords" in data.keys():
-		alarm["keywords"] = data["keywords"].split(',')
-	else:
-		keywords = []
-
-	if "note" in data.keys():
-		alarm["note"] = data["note"]
-	else:
-		note = None
-	if "level" in data.keys():
-		alarm["level"] = data["level"].split()
-	else:
-		level = []
-
 	module_response = alarms.register_alarm.apply_async( [credential_id, alarm],
 												queue="loghub",
 												routing_key="loghub"
 												).get()
-	if isinstance(module_response, str):
+	print(module_response)
+	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
-		response["data"] = {"alarm_id": module_response}
+		response["data"] = module_response
 		return jsonify(response)
 
 	elif isinstance(module_response, int):
@@ -82,6 +46,9 @@ def register_alarm():
 
 		elif module_response == 63:
 			return jsonify(alarm_responses[63])
+
+		elif module_response == 61:
+			return jsonify(alarm_responses[61])
 
 @app.route('/API/v1/alarms', methods=['GET'])
 def get_alarms():
@@ -132,10 +99,13 @@ def delete_alarm(alarm_id):
 												queue="loghub",
 												routing_key="loghub"
 												).get()
-	if module_response == 35:
-		return jsonify(users_responses[35])
-	elif module_response == 65:
-		return jsonify(alarm_responses[65])
-	elif module_response == 20:
+	if isinstance(module_response, int):
+		if module_response == 35:
+			return jsonify(users_responses[35])
+		elif module_response == 65:
+			return jsonify(alarm_responses[65])
+
+	elif isinstance(module_response, dict):
 		response = generic_responses[20].copy()
+		response["data"] = module_response
 		return jsonify(response)

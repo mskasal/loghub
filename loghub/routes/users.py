@@ -6,12 +6,10 @@ from functools import wraps
 
 def jsonize_request():
 	datatype = request.headers.get("Content-Type", None)
-	print datatype
 	if not datatype:
 		abort(404)
 	elif datatype == "application/x-www-form-urlencoded":
 		data = dict(request.form)
-		print data
 		for each in data.keys():
 			data[each] = data[each][0]
 	elif datatype == "application/json":
@@ -56,25 +54,19 @@ def create_user():
 												routing_key="loghub"
 												).get()
 
-	
-	if isinstance(module_response, dict):
-		response = generic_responses[20].copy()
-		response["data"] = {"CREDENTIAL_ID": module_response}		
-		return jsonify(response)
-
-	elif isinstance(module_response, int):
+	if isinstance(module_response, int):
 		if module_response in users_responses:
 			return jsonify(users_responses[module_response])
 		else:
-			return jsonify(users_responses[30])
+			return jsonify(users_responses[30])	
+	response = generic_responses[20].copy()
+	response["data"] = module_response
+	return jsonify(response)
 
 
-@app.route('/API/v1/user/', methods=['GET'])
-def get_user():
-	data = dict(request.args)
-	for key in data.keys():
-		data[key] = "".join(data[key])
-
+@app.route('/API/v1/user/<data>', methods=['GET'])
+def get_user(data):
+	data = dict([each.split("=") for each in data.split("&")])
 	if "email" not in data:
 		return jsonify(users_responses[33])
 	elif "@" not in data["email"] or "." not in data["email"]:
