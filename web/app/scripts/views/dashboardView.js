@@ -4,15 +4,17 @@ define([
     'text!templates/Dashboard.html',
     'views/alarmsView',
     'collections/alarms',
+    'collections/applications',
+    'views/applicationsView',
     'common',
     'logger'
-], function(Backbone, dashboardTemplate, AlarmsView, Alarms, Common, Logger) {
+], function(Backbone, dashboardTemplate, AlarmsView, Alarms, Applications, ApplicationsView, Common, Logger) {
     'use strict';
 
     var Dashboard = Backbone.View.extend({
 
         tagName: 'div',
-        className: 'maincontainer',
+        className: 'container',
         id: 'maincontainer',
 
         initialize: function() {
@@ -22,18 +24,15 @@ define([
         render: function(page) {
             this.$el.html(dashboardTemplate);
             $("#app").html(this.$el);
-            this.sidebar = this.$el.find("#sidebar");
             this.bind();
+        },
+        events: {
+            "click .addapp": "openAddApp"
         },
 
         bind: function() {
             var that = this;
-            this.sidebar.find("li a").click(function(e) {
-                e.preventDefault();
-                var id = $(this).data("navigate");
-                that.navigateToSidebar(id);
 
-            });
             Alarms.add([{
                 "id": "1"
             }, {
@@ -55,11 +54,30 @@ define([
             });
             alarmsView.render();
 
+            Applications.add([{
+
+                "id": "1",
+                "name": "1",
+                "createdAt": "1",
+                "APP_TOKEN": "1"
+            }, {
+
+                "id": "2",
+                "name": "2",
+                "createdAt": "2",
+                "APP_TOKEN": "2"
+            }], {
+                merge: true
+            });
+
+            this.applicationsView = new ApplicationsView({
+                collection: Applications
+            });
         },
 
-        navigateToSidebar: function(page) {
-            this.sidebar.find("a[data-navigate=" + page + "]").tab("show");
-            Backbone.history.navigate("dashboard/" + page, {
+        openAddApp: function(event) {
+            event.preventDefault();
+            Backbone.history.navigate("dashboard/applications", {
                 trigger: true
             })
         }

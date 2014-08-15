@@ -57,8 +57,6 @@ define([
                 content: this.popover.html(),
                 html: true
             });
-
-          //  $("#maincontainer").append(this.popover)
         },
 
         addOne: function(alarm) {

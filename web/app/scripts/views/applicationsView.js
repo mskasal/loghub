@@ -2,11 +2,12 @@
 define([
     'backbone',
     'text!templates/ApplicationView.html',
+    'text!templates/ApplicationsView.html',
     'models/applicationsModel',
     'common',
     'mustache',
     'logger'
-], function (Backbone, ApplicationViewTemplate, ApplicationModel, Common, Mustache, Logger) {
+], function (Backbone, ApplicationViewTemplate, ApplicationsViewTemplate, ApplicationModel, Common, Mustache, Logger) {
     'use strict';
     //view
     var ApplicationView = Backbone.View.extend({
@@ -43,7 +44,7 @@ define([
 
         addAll: function () {
             this.$el.empty();
-            this.collection.forEach(this.addOne, this);
+            this.collection.each(this.addOne, this);
         },
 
         addOne: function (application) {

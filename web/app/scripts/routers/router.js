@@ -38,10 +38,6 @@ define([
 
             this.dashboardView.render();
             Logger.i("Navigating Dashboard");
-            if (this[page])
-                this[page]();
-            else
-                this.dashboardView.navigateToSidebar("applications");
         },
         /**
          * Navigating index, callback
