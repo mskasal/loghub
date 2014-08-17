@@ -85,7 +85,7 @@ def get_user(data):
 				return jsonify(users_responses[30])
 	response = generic_responses[20].copy()
 	response["data"] = module_response
-	return jsonify(module_response)
+	return jsonify(response)
 
 
 @app.route('/API/v1/user/credential', methods=['POST'])
@@ -126,9 +126,12 @@ def change_user_password():
 												 queue="loghub",
 												 routing_key="loghub"
 												 ).get()
-	if module_response == 20:
-		return jsonify(generic_responses[20])
-	else:
+	if isinstance(module_response, dict):
+		response = generic_responses[20].copy()
+		response["data"] = module_response
+		return jsonify(response)
+		
+	elif isinstance(module_response, int):
 		return jsonify(users_responses[module_response])
 
 @app.route('/API/v1/user/email', methods=['PUT'])
@@ -140,17 +143,22 @@ def change_user_email():
 	data = jsonize_request()
 	if "new_email" not in data:
 		return jsonify(users_responses[33])
-	elif "@" not in data["email"] or "." not in data["email"]:
+	elif "@" not in data["new_email"] or "." not in data["new_email"]:
 		return jsonify(users_responses[34])
 	
 	module_response = users.change_user_email.apply_async([credential_id,
-											  data["email"],
+											  data["password"],
 											  data["new_email"]],
 											  queue="loghub",
 											  routing_key="loghub"
 											  ).get()
-	if module_response == 20:
-		return jsonify(generic_responses[20])
+	if isinstance(module_response, dict):
+		response = generic_responses[20].copy()
+		response["data"] = module_response
+		return jsonify(response)
+
+	if isinstance(module_response, int):
+		return jsonify(users_responses[module_response])
 
 
 @app.route('/API/v1/auth/remember', methods=['POST'])

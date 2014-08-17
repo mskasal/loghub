@@ -58,14 +58,12 @@ def get_alarms():
 										queue="loghub",
 										routing_key="loghub"
 										).get()
-
 	if isinstance(module_response, int):
 		if module_response == 36:
 			return users_responses[36]
 	else:
-		for alarm in module_response:                   
-			response = generic_responses[20].copy()
-			response["data"] = module_response
+		response = generic_responses[20].copy()                 
+		response["data"] = module_response
 		return jsonify(response)
 
 @app.route('/API/v1/alarms/<alarm_id>', methods=['GET'])
@@ -78,12 +76,12 @@ def get_alarm_by_id(alarm_id):
 										queue="loghub",
 										routing_key="loghub"
 										).get()
-	if isinstance(modules, int):
+	if isinstance(module_response, int):
 		if module_response < 70 and module_response >= 60:
-			return alarm_responses[module_response]
+			return jsonify(alarm_responses[module_response])
 	else:
 		response = generic_responses[20].copy()
-		response["data"]["alarm"] = module_response
+		response["data"] = module_response
 		return jsonify(response)
 
 
