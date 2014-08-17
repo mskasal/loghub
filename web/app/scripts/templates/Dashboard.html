@@ -12,7 +12,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-left">
                 <li>
-                    <a href="#" class="btn btn-default btn-link" data-toggle="popover" id="alarms">
+                    <a href="#" class="btn btn-default btn-link" data-toggle="popover" id="alarms-notification">
                         <span class="glyphicon glyphicon-bell"></span>
                     </a>
                 </li>
@@ -48,5 +48,17 @@
 </div>
 
 <div class="container-fluid container">
-    
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-right" role="tablist" id="dashboard-nav">
+        <li><a href="#alarms" role="tab" data-toggle="tab">Alarms</a></li>
+        <li><a href="#applications" role="tab" data-toggle="tab">Applications</a></li>
+        <li class="active"><a href="#logs" role="tab" data-toggle="tab">Logs</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="logs">...</div>
+        <div class="tab-pane" id="applications">...</div>
+        <div class="tab-pane" id="alarms">...</div>
+    </div>
 </div>

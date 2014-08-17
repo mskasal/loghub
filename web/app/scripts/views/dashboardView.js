@@ -2,13 +2,9 @@
 define([
     'backbone',
     'text!templates/Dashboard.html',
-    'views/alarmsView',
-    'collections/alarms',
-    'collections/applications',
-    'views/applicationsView',
     'common',
     'logger'
-], function(Backbone, dashboardTemplate, AlarmsView, Alarms, Applications, ApplicationsView, Common, Logger) {
+], function(Backbone, dashboardTemplate, Common, Logger) {
     'use strict';
 
     var Dashboard = Backbone.View.extend({
@@ -18,12 +14,16 @@ define([
         id: 'maincontainer',
 
         initialize: function() {
+
             Logger.i("Dashboard View Initialized");
         },
 
         render: function(page) {
             this.$el.html(dashboardTemplate);
             $("#app").html(this.$el);
+            Backbone.history.navigate("dashboard/logs", {
+                trigger: true
+            })
             this.bind();
         },
         events: {
@@ -33,53 +33,28 @@ define([
         bind: function() {
             var that = this;
 
-            Alarms.add([{
-                "id": "1"
-            }, {
-                "id": "2"
-            }, {
-                "id": "3"
-            }, {
-                "id": "4"
-            }, {
-                "id": "5"
-            }, {
-                "id": "6"
-            }], {
-                merge: true
+            $('#dashboard-nav a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                var target = e.target.hash.split("#")[1];
+
+                Backbone.history.navigate("dashboard/" + target, {
+                    trigger: true
+                })
             })
-
-            var alarmsView = new AlarmsView({
-                collection: Alarms
-            });
-            alarmsView.render();
-
-            Applications.add([{
-
-                "id": "1",
-                "name": "1",
-                "createdAt": "1",
-                "APP_TOKEN": "1"
-            }, {
-
-                "id": "2",
-                "name": "2",
-                "createdAt": "2",
-                "APP_TOKEN": "2"
-            }], {
-                merge: true
-            });
-
-            this.applicationsView = new ApplicationsView({
-                collection: Applications
-            });
         },
 
-        openAddApp: function(event) {
+        initializeAddApp: function(event) {
             event.preventDefault();
-            Backbone.history.navigate("dashboard/applications", {
-                trigger: true
-            })
+
+        },
+
+        initializeNotification: function(event) {
+            event.preventDefault();
+
+        },
+
+        initializeSettings: function(event) {
+            event.preventDefault();
+
         }
 
     });

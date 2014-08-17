@@ -33,6 +33,7 @@ define([
     //view collection
     var AlarmsView = Backbone.View.extend({
         el: "#alarms",
+        notification: $("#alarms-notification"),
         initialize: function() {
         },
 
@@ -50,13 +51,15 @@ define([
 
             this.collection.each(this.addOne, this);
 
-            this.$el.popover({
+            this.notification.popover({
                 trigger: "click",
                 placement: "bottom",
                 container: "body",
                 content: this.popover.html(),
                 html: true
             });
+
+            this.$el.html(this.popover)
         },
 
         addOne: function(alarm) {
