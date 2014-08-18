@@ -60,17 +60,30 @@ define([
             })
 
             Applications.add([{
-
                 "id": "1",
-                "name": "1",
-                "createdAt": "1",
-                "APP_TOKEN": "1"
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
             }, {
-
                 "id": "2",
-                "name": "2",
-                "createdAt": "2",
-                "APP_TOKEN": "2"
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+            }, {
+                "id": "3",
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+            }, {
+                "id": "4",
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
+            }, {
+                "id": "5",
+                "name": "MyUberWebsite",
+                "createdAt": "2014-03-18 20:16:32",
+                "APP_TOKEN": "88KOBg4q48cusrkravuqe95TRH"
             }], {
                 merge: true
             });
