@@ -44,36 +44,60 @@ def register_alarm(credential_id, alarm):
 
 @c.task(name="loghub.modules.alarms.get_alarms")
 def get_alarms(credential_id):
+#	print("<<< REQUEST STARTS: GET ALARMS >>>")
+#	print("CREDENTIAL_ID :" + credential_id)
 	user = db.users.find_one({"credential_id": credential_id})
+#	print("USER_DATA :" + str(user))
 	if user:
-		alarms=[]
-		alarms_data = db.alarms.find({"user": user["_id"]}, {"_id": 0}) 
-		for alarm in alarms_data:
-			alarm["user"] = str(alarm["user"])
-			alarms.append(alarm)
-		return alarms
+		alarms_data = list(db.alarms.find({"user": str(user["_id"])}))
+#		print("FOUND:")
+#		print(*alarms_data, sep="\n")
+		for i in range(len(alarms_data)):
+			alarms_data[i]["user"] = str(alarms_data[i]["user"])
+			alarms_data[i]["id"] = str(alarms_data[i]["_id"])
+			del alarms_data[i]["_id"]
+#		print("<<< REQUEST ENDS >>>")
+		return alarms_data
 	else:
+#		print("Error 36: User not found.")
+#		print("<<< REQUEST ENDS >>>")
 		return 36
 
 @c.task(name="loghub.modules.alarms.get_alarm_by_id")
 def get_alarm_by_id(credential_id, alarm_id):
+#	print("<<< REQUEST STARTS: GET ALARM BY ID >>>")
+#	print("CREDENTIAL_ID :" + credential_id)
 	user = db.users.find_one({"credential_id": credential_id})
+#	print("USER_DATA :" + str(user))
 	if not user:
+#		print("Error 36: User not found.")
+#		print("<<< REQUEST ENDS >>>")
 		return 36
-	alarm = db.alarms.find_one({"user": user["_id"], "alarm_id": alarm_id})
-	alarm["_id"] = str(alarm["_id"])
+	alarm = db.alarms.find_one({"user": str(user["_id"]), "_id": ObjectId(alarm_id)})
+#	print({"user": user["_id"], "_id": ObjectId(alarm_id)})
+#	print(alarm)
 	if not alarm:
+#		print("Error 65: Alarm not found.")
+#		print("<<< REQUEST ENDS >>>")
 		return 65
+	alarm["id"] = str(alarm["_id"])
+	del alarm["_id"]
+#	print("FOUND:", alarm, sep="\n")
 	return alarm
 	
 @c.task(name="loghub.modules.alarms.delete_alarm")
 def delete_alarm(credential_id, alarm_id):
+#	print("<<< REQUEST STARTS: DELETE ALARM BY ID >>>")
+#	print("CREDENTIAL_ID :" + credential_id)
 	user = db.users.find_one({"credential_id": credential_id})
 	if not user:
 		return 35
-	response_data = db.alarms.find_one({"user": ObjectId(user["_id"]), "_id": ObjectId(alarm_id)})
-	result = db.alarms.remove({"user": ObjectId(user["_id"]), "_id": ObjectId(alarm_id)})
+#	print("USER_DATA :" + str(user))
+	response_data = db.alarms.find_one({"user": str(user["_id"]), "_id": ObjectId(alarm_id)})
+	result = db.alarms.remove({"user": str(user["_id"]), "_id": ObjectId(alarm_id)})
 	if result["n"] == 1:
+		response_data["id"] = str(response_data["_id"])
+		del response_data["_id"] 
 		return response_data
 	else:
 		return 65

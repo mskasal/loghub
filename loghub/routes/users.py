@@ -76,7 +76,7 @@ def get_user(data):
 											queue="loghub",
 											routing_key="loghub"
 											).get()
-	
+
 	if not isinstance(module_response, dict):
 		if isinstance(module_response, int):
 			if module_response in users_responses:
@@ -85,7 +85,7 @@ def get_user(data):
 				return jsonify(users_responses[30])
 	response = generic_responses[20].copy()
 	response["data"] = module_response
-	return jsonify(module_response)
+	return jsonify(response)
 
 
 @app.route('/API/v1/user/credential', methods=['POST'])
@@ -126,13 +126,12 @@ def change_user_password():
 												 queue="loghub",
 												 routing_key="loghub"
 												 ).get()
-	module_response["_id"] = str(module_response["_id"])
-	
 	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
 		response["data"] = module_response
 		return jsonify(response)
-	else:
+		
+	elif isinstance(module_response, int):
 		return jsonify(users_responses[module_response])
 
 @app.route('/API/v1/user/email', methods=['PUT'])
@@ -142,7 +141,6 @@ def change_user_email():
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
 	data = jsonize_request()
-	print data
 	if "new_email" not in data:
 		return jsonify(users_responses[33])
 	elif "@" not in data["new_email"] or "." not in data["new_email"]:
@@ -154,11 +152,14 @@ def change_user_email():
 											  queue="loghub",
 											  routing_key="loghub"
 											  ).get()
-	module_response["_id"] = str(module_response["_id"])
 	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
 		response["data"] = module_response
 		return jsonify(response)
+
+	if isinstance(module_response, int):
+		return jsonify(users_responses[module_response])
+
 
 @app.route('/API/v1/auth/remember', methods=['POST'])
 @check_email
@@ -169,9 +170,7 @@ def remember_account():
 													routing_key="loghub"
 													).get()
 	if module_response == 20:
-		response = generic_responses[20].copy()
-		response["data"] = data
-		return jsonify(response)
+		return jsonify(generic_responses[20])
 	else:
 		return jsonify(users_responses[module_response])
 
@@ -192,8 +191,6 @@ def reset_user_password():
 										  routing_key="loghub"
 										  ).get()
 	if module_response == 20:
-		response = generic_responses[20].copy()
-		response["data"] = data
-		return jsonify(response)
+		return jsonify(generic_responses[20])
 	else:
 		return jsonify(users_responses[module_response])

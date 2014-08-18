@@ -21,7 +21,6 @@ def create_user(email, password):
 		db.users.insert(user.copy())
 	except:
 		return 32
-
 	return user
 
 @c.task(name="loghub.modules.users.get_user")
@@ -40,21 +39,36 @@ def get_user(email, password):
 
 @c.task(name="loghub.modules.users.change_user_password")
 def change_user_password(credential_id, password, new_password):
-	result = db.users.update({"credential_id": credential_id,
-	 				 			"password": password}, 
-	 							{"$set": {"password": new_password}}, 
-	 							upsert=False)
-	if result["n"] > 0:
-		return db.users.find_one({"credential_id":credential_id})
+	user_data = db.users.find_one({"credential_id": credential_id,
+	 				 		"password": password}, 
+	 						{"_id": 0})
+	if user_data:
+		result = db.users.update({"credential_id": credential_id,
+	 					 			"password": password}, 
+	 								{"$set": {"password": new_password}}, 
+	 								upsert=False)
+	
+		if result["n"] > 0:
+			user_data["password"] = new_password
+			return user_data
 	else:
 		return 31
+
 @c.task(name="loghub.modules.users.change_user_email")
 def change_user_email(credential_id, password, new_email):
-	result = db.users.update({"credential_id": credential_id, 
-							  "password": password}, 
-							 {"$set": {"email": new_email}},
-							 upsert=False)
-	return db.users.find_one({"credential_id":credential_id})
+	user_data = db.users.find_one({"credential_id": credential_id,
+							"password": password},
+							{"_id": 0})
+	if user_data:
+		result = db.users.update({"credential_id": credential_id, 
+								  "password": password}, 
+								 {"$set": {"email": new_email}},
+								 upsert=False)
+		if result["n"] > 0:
+			user_data["email"] = new_email
+			return user_data
+	else:
+		return 31
 
 @c.task(name="loghub.modules.users.remember_account")
 def remember_account(email):
