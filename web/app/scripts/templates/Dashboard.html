@@ -57,8 +57,106 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane active" id="logs">...</div>
-        <div class="tab-pane" id="applications">...</div>
+        <!-- logs -->
+        <div class="tab-pane active" id="logs">
+            <div class="form-group">
+                    <button class="btn btn-link filter-toggle-button" id="filter-toggle-button">
+                        <span class="glyphicon glyphicon-chevron-left">
+                        </span>
+                        Hide
+                    </button>
+                </div>
+            <!-- logs filter --> 
+            <div class="logs-filter col-xs-12 col-sm-4 col-md-4 col-lg-3">
+
+                
+                    <!-- application select -->
+                <div class="form-group">
+                    <label for="application-selected">Application</label>
+                    <select class="selectpicker span2" multiple id="application-selected">
+                        <option>Mustard</option>
+                        <option>Ketchup</option>
+                        <option>Relish</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="logs-limit">Limit</label>
+                    <input type="text" class="form-control" id="logs-limit" placeholder="default 100">
+                </div>
+
+                <div class="form-group">
+                    <label for="logs-sort">Sorted by</label>
+                    <select class="selectpicker span2" id="logs-sort">
+                        <option>Date</option>
+                        <option>Level</option>
+                        <option>Asc</option>
+                        <option>Desc</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="logs-contain">Keyword</label>
+                    <input type="text" class="form-control" id="logs-contain" placeholder="type here..">
+                </div>
+
+                <div class="form-group">
+                    <label for="logs-level">Level</label>
+                    <select class="selectpicker span2" id="logs-level" multiple>
+                        <option>Warning</option>
+                        <option>Info</option>
+                        <option>Error</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="datepicker-logs-date-range">Date</label>
+                    <div class="input-daterange input-group" id="datepicker-logs-date-range">
+                        <input type="text" class="input-sm form-control" name="start" id="older-than"/>
+                        <span class="input-group-addon">to</span>
+                        <input type="text" class="input-sm form-control" name="end" id="newer-than"/>
+                    </div>
+                </div>
+
+            </div> 
+
+            <!-- logs list -->
+            <ul class="list-group col-xs-12 col-sm-7 col-md-7 col-lg-8" id="logs-list">
+                
+            </ul>
+
+        </div>
+        <!-- applications -->        
+        <div class="tab-pane" id="applications">
+
+        <!-- application filter -->
+            <div class="applications-filter row">
+
+            <!-- filter searchs -->
+                <div class="search col-xs-12 col-sm-6 col-md-4 col-lg-4 form-inline">
+                    <input type="search" name="" id="application-search" class="form-control col-xs-12 col-sm-9 col-md-9 col-lg-9" value="" title="application search" placeholder="Find a application..">
+                    <button class="search-button btn btn-default col-xs-12 col-sm-4 col-md-3 col-lg-3">Search</button>
+                </div>
+
+                <!-- filter type -->
+                <div class="application-type col-xs-6 col-sm-4 col-md-6 col-lg-6">
+                    <ul>
+                        <li class="all"><a href="" class="active">All</a></li>
+                        <li class="owned"><a href="">Owned</a></li>
+                        <li class="consumed"><a href="">Consumed</a></li>
+                    </ul>
+                </div>
+
+                <div class="add-new-application col-xs-6 col-sm-1 col-md-1 col-lg-1">
+                    <button class="add-new-application-button btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span> 
+                        New
+                    </button>
+                </div>
+
+            </div>
+            <ul class="list-group" id="application-list"></ul>
+        </div>
         <div class="tab-pane" id="alarms">...</div>
     </div>
 </div>

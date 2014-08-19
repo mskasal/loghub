@@ -53,6 +53,24 @@ define([
                     "level": "info",
                     "date": "4",
                     "metadata": "4"
+                }, {
+                    "APP_TOKEN": "2",
+                    "message": "2",
+                    "level": "info",
+                    "date": "2",
+                    "metadata": "2"
+                }, {
+                    "APP_TOKEN": "3",
+                    "message": "3",
+                    "level": "info",
+                    "date": "3",
+                    "metadata": "3"
+                }, {
+                    "APP_TOKEN": "4",
+                    "message": "4",
+                    "level": "info",
+                    "date": "4",
+                    "metadata": "4"
                 }
 
             ], {

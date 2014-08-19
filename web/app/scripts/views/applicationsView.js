@@ -13,8 +13,8 @@ define([
     var ApplicationView = Backbone.View.extend({
 
         template: ApplicationViewTemplate,
-        tagName: "li",
-        className: "app-item",
+        tagName: "a",
+        className: "app-item list-group-item",
 
         initialize: function () {
 
@@ -23,7 +23,6 @@ define([
         render: function () {
 
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));
-
             return this;
         },
 
@@ -34,7 +33,7 @@ define([
 
     //view collection
     var ApplicationsView = Backbone.View.extend({
-        el: "#applications",
+        el: "#application-list",
         initialize: function () {},
 
         render: function () {

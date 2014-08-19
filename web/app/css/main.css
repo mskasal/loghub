@@ -1,4 +1,8 @@
 /* Bootstrap css imported */
 @import '../scripts/vendor/bootstrap/css/bootstrap.min.css';
+@import '../scripts/vendor/bootstrap-select/css/bootstrap-select.css';
+@import '../scripts/vendor/datepicker/css/datepicker3.css';
 @import 'dashboard.css';
 @import 'signin.css';
+@import 'applications.css';
+@import 'logs.css';

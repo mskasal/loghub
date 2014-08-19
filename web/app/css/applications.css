@@ -1,0 +1,56 @@
+#applications{
+	padding-top: 30px;
+}
+#application-list> a.app-item{
+	border-left: none;
+	border-right: none;
+	border-radius:0;
+	cursor: pointer;
+}
+
+#application-list> a.app-item > .create-date{
+	color:#c3c3c3;
+	font-size: 12px;
+}
+
+#applications .applications-filter{
+	margin-bottom: 20px;
+}
+#applications .applications-filter .search-button{
+	margin-left: 4px;
+}
+#applications .applications-filter .application-type{
+	text-align: right;
+	padding-top: 7px;
+}
+
+
+#applications .applications-filter .application-type> ul{
+	display: inline;
+}
+#applications .applications-filter .application-type> ul >li{
+	display: inline;
+	margin-left: 3px;
+}
+#applications .applications-filter .application-type> ul >li > a.active{
+	text-decoration: none;
+	color:#333;
+}
+
+@media (max-width: 768px) {
+	#applications .applications-filter .search-button{
+		margin-left: 0px;
+		margin-top: 3px;
+	}
+	#applications .applications-filter .add-new-application{
+		margin-top: 10px;
+	}
+	#applications .applications-filter .add-new-application button{
+		float:right;
+	}
+	#applications .applications-filter .application-type{
+		margin-top: 10px;
+	}
+	
+	
+}

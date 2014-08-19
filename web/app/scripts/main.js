@@ -4,6 +4,8 @@ require.config({
         underscore: "vendor/underscore/underscore",
         backbone: "vendor/backbone/backbone",
         bootstrap: "vendor/bootstrap/js/bootstrap",
+        bootstrapSelect: 'vendor/bootstrap-select/js/bootstrap-select',
+        bootstrapDatepicker: 'vendor/datepicker/js/bootstrap-datepicker',
         logger: "vendor/logger/logger",
         mustache: "vendor/mustache/mustache",
         text: 'vendor/requirejs-text/text'
