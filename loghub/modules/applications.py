@@ -91,50 +91,7 @@ def get_apps(credential_id):
 	return app_list
 
 @c.task(name="loghub.modules.applications.delete_apps")
-<<<<<<< HEAD
-def delete_apps(APP_TOKEN,credential_id):
-    user = db["users"].find_one({
-                "credential_id":credential_id
-                })
-    if not user:
-        return 20
 
-    user_id = user["_id"]
-    app = coll.find_one({
-           "APP_TOKEN":APP_TOKEN,
-            })
-    if not app:
-        return 47
-    app_id = app["_id"]
-    try:
-        if is_admin(app_id, user_id):
-            coll.remove(app)
-            return app
-    except:
-        return 48
-
-@c.task(name="loghub.modules.applications.reset_app_token")
-def reset_app_token(old_app_token,credential_id):
-    if not old_app_token and  not credential_id:
-        return 49
-    if not old_app_token:
-        return 47
-    if not credential_id:
-        return 43
-    record = coll.find_one({"APP_TOKEN":old_app_token})
-    if not record:
-        return 45
-
-    variable = str(math.floor(time.time())    )
-    NEW_APP_TOKEN = hashlib.md5((record["name"] + credential_id + variable).encode('utf8')).hexdigest()
-    record["APP_TOKEN"] = NEW_APP_TOKEN
-    try:
-        coll.save(record)
-        return record
-
-    except:
-        return 50
-=======
 def delete_apps(APP_TOKEN, credential_id):
 	user = db["users"].find_one({
 				"credential_id": credential_id
@@ -177,4 +134,3 @@ def reset_app_token(old_app_token, credential_id):
 
 	except:
 		return 50
->>>>>>> nejdet/development
