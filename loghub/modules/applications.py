@@ -36,61 +36,62 @@ def register_app(name,credential_id):
     return app
 
 
+
 @c.task(name="loghub.modules.applications.get_app")
 def get_app(credential_id, APP_TOKEN):
-    app = coll.find_one({
-                        "APP_TOKEN": APP_TOKEN
-                        })
-    if not app:
-        return 47
-    app_id = app["_id"]
+	app = coll.find_one({
+						"APP_TOKEN": APP_TOKEN
+						})
+	if not app:
+		return 47
+	app_id = app["_id"]
    
-    user = db["users"].find_one({
-                "credential_id":credential_id
-                })
-    user_id = user["_id"]
+	user = db["users"].find_one({
+				"credential_id":credential_id
+				})
+	user_id = user["_id"]
    
 
-    if check_user(user_id,app_id):
-        app["_id"] = str(app["_id"])
-        return app
+	if check_user(user_id,app_id):
+		app["_id"] = str(app["_id"])
+		return app
 
-    return 48
+	return 48
 
 
 
 @c.task(name="loghub.modules.applications.get_apps")
 def get_apps(credential_id):
-    if not credential_id:
-        return 43
+	if not credential_id:
+		return 43
 
-    user = db["users"].find_one({
-                "credential_id":credential_id
-                })
-    
-    if not user:
-        return 44
+	user = db["users"].find_one({
+				"credential_id": credential_id
+				})
+	
+	if not user:
+		return 44
 
-    user_id = user["_id"]
-    
-    app_ids = get_user_apps(user_id)
-    
+	user_id = user["_id"]
+	
+	app_ids = get_user_apps(user_id)
+	
 
-    if not app_ids:
-        return 45 
+	if not app_ids:
+		return 45 
 
-    app_list = []
-    for app_id in app_ids:
-        application = coll.find_one({
-            "_id":ObjectId(app_id)
-            })
-       
-        if not application:
-            return 46
-        application["_id"] = str(application["_id"])
-        app_list.append(application)
-        
-    return app_list
+	app_list = []
+	for app_id in app_ids:
+		application = coll.find_one({
+			"_id": ObjectId(app_id)
+			})
+	   
+		if not application:
+			return 46
+		application["_id"] = str(application["_id"])
+		app_list.append(application)
+
+	return app_list
 
 @c.task(name="loghub.modules.applications.delete_apps")
 def delete_apps(APP_TOKEN,credential_id):

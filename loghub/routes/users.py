@@ -86,7 +86,7 @@ def get_user(data):
 				return jsonify(users_responses[30])
 	response = generic_responses[20].copy()
 	response["data"] = module_response
-	return jsonify(module_response)
+	return jsonify(response)
 
 
 @app.route('/API/v1/user/credential', methods=['POST'])
@@ -127,13 +127,21 @@ def change_user_password():
 												 queue="loghub",
 												 routing_key="loghub"
 												 ).get()
+<<<<<<< HEAD
 	module_response["_id"] = str(module_response["_id"])
 	
+=======
+>>>>>>> aa88cbcca8883bd96cabefe4ae4327713db72244
 	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
 		response["data"] = module_response
 		return jsonify(response)
+<<<<<<< HEAD
 	else:
+=======
+		
+	elif isinstance(module_response, int):
+>>>>>>> aa88cbcca8883bd96cabefe4ae4327713db72244
 		return jsonify(users_responses[module_response])
 
 @app.route('/API/v1/user/email', methods=['PUT'])
@@ -155,11 +163,21 @@ def change_user_email():
 											  queue="loghub",
 											  routing_key="loghub"
 											  ).get()
+<<<<<<< HEAD
 	module_response["_id"] = str(module_response["_id"])
+=======
+>>>>>>> aa88cbcca8883bd96cabefe4ae4327713db72244
 	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
 		response["data"] = module_response
 		return jsonify(response)
+<<<<<<< HEAD
+=======
+
+	if isinstance(module_response, int):
+		return jsonify(users_responses[module_response])
+
+>>>>>>> aa88cbcca8883bd96cabefe4ae4327713db72244
 
 @app.route('/API/v1/auth/remember', methods=['POST'])
 @check_email
