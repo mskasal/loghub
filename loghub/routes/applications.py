@@ -27,17 +27,21 @@ def register_app():
     if not credential_id:
         return jsonify(applications_responses[47])
     data = jsonize_request()
+
     module_response = applications.register_app.apply_async([data["name"], credential_id],
                                                     queue="loghub",
                                                     routing_key="loghub"
                                                     ).get()
+
+
+    module_response["_id"] = str(module_response["_id"])
+
     if isinstance(module_response, int):
         if module_response == 19:
             return jsonify(generic_responses[19])
     
     if isinstance(module_response, dict):
-        response = generic_responses[20].copy()
-        module_response["_id"] = str(module_response["_id"])
+        response = generic_responses[20].copy()        
         response["data"] =  module_response        
         return jsonify(response)
 

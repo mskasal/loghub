@@ -12,6 +12,7 @@ coll = db[collection_name]
 
 @c.task(name="loghub.modules.applications.register_app")
 def register_app(name,credential_id):
+
     if not name and not credential_id:
         return 41
     if not name:
@@ -20,19 +21,21 @@ def register_app(name,credential_id):
         return 43
 
     APP_TOKEN = hashlib.md5((name + credential_id + str(math.floor(time.time()))).encode('utf8')).hexdigest()
+
     app = {
             "name":name,
             "APP_TOKEN": APP_TOKEN,
             "createdAt": datetime.utcnow()
-            }
-    app_id = coll.insert(app.copy())
+            }    
+
+    app_id = coll.insert(app)
+   
 
     user_id = db["users"].find_one({"credential_id":credential_id })["_id"]
     if not user_id:
-        return 44
+        return 44    
     
     add_user_to_app(user_id,app_id,"admin")
-
     return app
 
 
@@ -44,18 +47,15 @@ def get_app(credential_id, APP_TOKEN):
 						})
 	if not app:
 		return 47
-	app_id = app["_id"]
-   
+	app_id = app["_id"]   
 	user = db["users"].find_one({
 				"credential_id":credential_id
-				})
+				})    
 	user_id = user["_id"]
-   
 
 	if check_user(user_id,app_id):
 		app["_id"] = str(app["_id"])
 		return app
-
 	return 48
 
 
@@ -64,18 +64,14 @@ def get_app(credential_id, APP_TOKEN):
 def get_apps(credential_id):
 	if not credential_id:
 		return 43
-
 	user = db["users"].find_one({
 				"credential_id": credential_id
 				})
-	
+
 	if not user:
 		return 44
-
-	user_id = user["_id"]
-	
+	user_id = user["_id"]	
 	app_ids = get_user_apps(user_id)
-	
 
 	if not app_ids:
 		return 45 
@@ -127,12 +123,18 @@ def reset_app_token(old_app_token,credential_id):
     if not record:
         return 45
 
-    variable = str(math.floor(time.time())    )
+    variable = str(math.floor(time.time()))
     NEW_APP_TOKEN = hashlib.md5((record["name"] + credential_id + variable).encode('utf8')).hexdigest()
     record["APP_TOKEN"] = NEW_APP_TOKEN
+
     try:
         coll.save(record)
         return record
 
     except:
         return 50
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
