@@ -64,6 +64,7 @@ def create_user():
 	return jsonify(response)
 
 
+
 @app.route('/API/v1/user/<data>', methods=['GET'])
 def get_user(data):
 	data = dict([each.split("=") for each in data.split("&")])
@@ -126,11 +127,12 @@ def change_user_password():
 												 queue="loghub",
 												 routing_key="loghub"
 												 ).get()
+
 	if isinstance(module_response, dict):
 		response = generic_responses[20].copy()
 		response["data"] = module_response
 		return jsonify(response)
-		
+
 	elif isinstance(module_response, int):
 		return jsonify(users_responses[module_response])
 
