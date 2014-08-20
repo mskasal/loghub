@@ -12,7 +12,7 @@ users_responses = {
 	36: {"status": {"code": 36, "message": "CREDENTIAL_ID is invalid."}}, # was duplicate of 25, then changed.
 	37: {"status": {"code": 37, "message": "Password required."}},
 	38: {"status": {"code": 38, "message": "Password is invalid."}},
-	39: {"status": {"code": 39, "message": "Verification code is invalid."}}
+	39: {"status": {"code": 39, "message": "Verification code is invalid or missing."}}
 	}
 
 alarm_responses = {

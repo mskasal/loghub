@@ -91,6 +91,9 @@ def remember_account(email):
 
 @c.task(name="loghub.modules.users.reset_user_password")
 def reset_user_password(email, new_password, code):
+	record = db.codes.find_one({"email": email, "code": code})
+	if not record:
+		return 39
 	response = db.users.update({"email": email}, 
 			{"$set": {"password": new_password}}, 
 			upsert=False)

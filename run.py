@@ -1,15 +1,10 @@
 import os
 from loghub import app
 from loghub.storage import db
-from loghub.modules import users
-from loghub.modules import applications
-from loghub.modules import logs
-from loghub.routes import users
-from loghub.routes import logs
-from loghub.routes import applications
-
+from loghub.modules import *
+from loghub.routes import *
 
 if __name__ == '__main__':
-    app.run("192.168.33.10",
-    #app.run("localhost",
+    #app.run("192.168.33.10",
+    app.run("localhost",
             debug=True)

@@ -184,7 +184,7 @@ def reset_user_password():
 	if "code" not in data: 
 		return jsonify(users_responses[39])
 	if "new_password" not in data:
-		return jsonify(users_response[37])
+		return jsonify(users_responses[37])
 
 	module_response = users.reset_user_password.apply_async([data["email"], 
 										  data["new_password"],
