@@ -61,7 +61,7 @@ def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
                                         queue="loghub",
                                         routing_key="loghub"
                                         ).get()
-    print module_response
+    print(module_response)
 
     if isinstance(module_response, int):
         return jsonify(log_responses[module_response])

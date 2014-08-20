@@ -142,7 +142,6 @@ def change_user_email():
 		return jsonify(users_responses[35])
 	credential_id = credential_line.split()[1]
 	data = jsonize_request()
-	print data
 	if "new_email" not in data:
 		return jsonify(users_responses[33])
 	elif "@" not in data["new_email"] or "." not in data["new_email"]:
@@ -186,7 +185,7 @@ def reset_user_password():
 	if "code" not in data: 
 		return jsonify(users_responses[39])
 	if "new_password" not in data:
-		return jsonify(users_response[37])
+		return jsonify(users_responses[37])
 
 	module_response = users.reset_user_password.apply_async([data["email"], 
 										  data["new_password"],

@@ -58,11 +58,11 @@ def query_log(credential_id, APP_TOKENS=None, query_limit=100,
         query["date"]["$lte"] = older_than
 
     result = []
-    print app_ids
+    print(app_ids)
 
     for app_id in app_ids:
         app = db.apps.find_one({"_id":app_id})
-        print app
+        print(app)
         APP_TOKEN = app["APP_TOKEN"]
 
         if not APP_TOKEN:

@@ -29,7 +29,7 @@ def register_app(name,credential_id):
             }    
 
     app_id = coll.insert(app)
-    print "Eklenen App ID {}".format(app_id)
+    print("Eklenen App ID {}".format(app_id))
    
 
     user_id = db["users"].find_one({"credential_id":credential_id })["_id"]
