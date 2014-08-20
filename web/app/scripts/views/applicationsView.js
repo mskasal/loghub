@@ -7,7 +7,7 @@ define([
     'common',
     'mustache',
     'logger'
-], function (Backbone, ApplicationViewTemplate, ApplicationsViewTemplate, ApplicationModel, Common, Mustache, Logger) {
+], function(Backbone, ApplicationViewTemplate, ApplicationsViewTemplate, ApplicationModel, Common, Mustache, Logger) {
     'use strict';
     //view
     var ApplicationView = Backbone.View.extend({
@@ -16,41 +16,79 @@ define([
         tagName: "a",
         className: "app-item list-group-item",
 
-        initialize: function () {
+        initialize: function() {
 
         },
 
-        render: function () {
+        render: function() {
 
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));
             return this;
         },
 
-        mustacheTemplate: function (template, JSON) {
+        mustacheTemplate: function(template, JSON) {
             return Mustache.render(template, JSON);
         }
     });
 
     //view collection
     var ApplicationsView = Backbone.View.extend({
-        el: "#application-list",
-        initialize: function () {},
+        el: "#applications",
+        initialize: function() {
+            var that = this;
+            this.collection.fetch({
+                headers: {
+                    'Authorization': Common.CREDENTIAL_ID
+                },
+                success: function() {
+                    that.render();
+                }
+            });
+        },
 
-        render: function () {
+        events: {
+            "click .add-new-application-button": "addNewApplication",
+            "click .create-new-app": "createNewApplication"
+
+        },
+
+        render: function() {
+
             this.addAll();
             return this;
         },
 
-        addAll: function () {
-            this.$el.empty();
+        addAll: function() {
+            this.$('#application-list').empty();
             this.collection.each(this.addOne, this);
         },
 
-        addOne: function (application) {
+        addOne: function(application) {
             var applicationView = new ApplicationView({
                 model: application
             });
-            this.$el.prepend(applicationView.render().el);
+            this.$('#application-list').prepend(applicationView.render().el);
+        },
+
+        addNewApplication: function(event) {
+            this.$(event.currentTarget).removeClass("btn-success add-new-application-button").addClass("btn-primary btn-xs create-new-app").text("Create")
+            this.$('#application-name').removeClass("hidden");
+        },
+
+        createNewApplication: function() {
+            var that = this;
+
+            var applicationName = this.$("#application-name").val();
+            console.log(applicationName)
+
+            this.collection.create({
+                name: that.applicationName
+            }, {
+                wait: true,
+                headers: {
+                    'Authorization': Common.CREDENTIAL_ID
+                }
+            })
         }
     });
 

@@ -38,13 +38,24 @@ define([
     var LogsView = Backbone.View.extend({
         el: "#logs",
 
-        initialize: function() {},
+        initialize: function() {
+            var that = this;
+            this.collection.fetch({
+                headers: {
+                    'Authorization': Common.CREDENTIAL_ID
+                },
+                success: function() {
+                    that.render();
+                }
+            });
+        },
 
         events: {
             "click .filter-toggle-button": "toggleFilter"
         },
 
         render: function() {
+            
             $('.logs-filter .selectpicker').selectpicker({
                 width: "100%"
             });
@@ -57,7 +68,7 @@ define([
             return this;
         },
 
-        toggleFilter: function(){
+        toggleFilter: function() {
             $('.logs-filter').toggleClass("open");
         },
 
@@ -71,6 +82,10 @@ define([
                 model: log
             });
             this.$("#logs-list").prepend(logView.render().el);
+        },
+
+        getFilterParameters : function(){
+            
         }
     });
 

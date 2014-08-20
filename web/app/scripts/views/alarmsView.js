@@ -35,9 +35,19 @@ define([
         el: "#alarms",
         notification: $("#alarms-notification"),
         initialize: function() {
+            var that = this;
+            this.collection.fetch({
+                headers: {
+                    'Authorization': Common.CREDENTIAL_ID
+                },
+                success: function() {
+                    that.render();
+                }
+            });
         },
 
         render: function() {
+
             this.addAll();
             return this;
         },

@@ -17,14 +17,18 @@ define([
 
         initialize: function() {
             this.bind('change:CREDENTIAL_ID', this.onCREDENTIAL_IDChange, this);
-            this.set({
-                'CREDENTIAL_ID': localStorage.getItem('CREDENTIAL_ID')
-            });
+            console.log(localStorage.getItem('CREDENTIAL_ID'))
+            if (localStorage.getItem('CREDENTIAL_ID')) {
+                this.set({
+                    'CREDENTIAL_ID': localStorage.getItem('CREDENTIAL_ID')
+                });
+                Common.setItem('CREDENTIAL_ID', localStorage.getItem('CREDENTIAL_ID'))
+            }
         },
         login: function() {
             var that = this;
 
-            var url = Common.apiURL + '/API/v1/auth';
+            var url = Common.apiURL + '/API/v1/users';
 
             return $.ajax({
                 url: url,
@@ -35,18 +39,7 @@ define([
                     email: that.get("email"),
                     password: that.get("password")
                 })
-            }).always(function(response) {
-                response = {
-                    "status": {
-                        "code": 20,
-                        "message": "successful"
-                    },
-                    "data": {
-                        "email": "yoursexyemail@domain.com",
-                        "registered_at": "2014-02-22 16:32:20",
-                        "CREDENTIAL_ID": "g3b0hg4q48cusrkravuqe503g1"
-                    }
-                }
+            }).done(function(response) {
 
                 Logger.i("Login request details: " + response.status.message);
 
@@ -61,13 +54,17 @@ define([
             this.set({
                 'loggedIn': !!CREDENTIAL_ID
             });
+            Common.setItem('loggedIn', !!CREDENTIAL_ID);
+            console.log(Common)
         },
 
         setCREDENTIAL_ID: function(CREDENTIAL_ID) {
-            localStorage.setItem('CREDENTIAL_ID', CREDENTIAL_ID)
+            Common.setItem('CREDENTIAL_ID', CREDENTIAL_ID);
+            localStorage.setItem('CREDENTIAL_ID', CREDENTIAL_ID);
             this.set({
                 'CREDENTIAL_ID': CREDENTIAL_ID
             });
+            console.log(Common)
         }
 
     });

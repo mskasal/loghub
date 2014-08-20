@@ -14,6 +14,7 @@ define([
         // Save all of the items under the `"items"` namespace.
         //localStorage: new Store('items-backbone'),
         initialize: function() {
+        
         },
 
         parse: function(response) {

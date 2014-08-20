@@ -136,9 +136,10 @@ define([
          * Navigating dashboard, callback
          */
         dashboard: function(page) {
+            
+            Logger.i("Navigating Dashboard");
 
             this.dashboardView.render();
-            Logger.i("Navigating Dashboard");
         },
         /**
          * Navigating index, callback
