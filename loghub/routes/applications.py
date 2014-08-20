@@ -23,9 +23,9 @@ def jsonize_request():
 @app.route('/API/v1/applications', methods=['POST'])
 def register_app():
     credential = request.headers.get('Authorization',None)
+    if not credential:
+        return jsonify(applications_responses[43])
     credential_id = credential.split()[1]
-    if not credential_id:
-        return jsonify(applications_responses[47])
     data = jsonize_request()
 
     module_response = applications.register_app.apply_async([data["name"], credential_id],
@@ -55,9 +55,11 @@ def register_app():
 @app.route('/API/v1/applications', methods=['GET'])
 def get_apps():
     credential = request.headers.get('Authorization', None)
+    
+    if not credential:
+        return jsonify(applications_responses[43])
+
     credential_id = credential.split()[1]
-    if not credential_id:
-        return jsonify(applications_responses[47])
     module_response = applications.get_apps.apply_async([credential_id],
                                                     queue="loghub",
                                                     routing_key="loghub"
@@ -77,10 +79,12 @@ def get_apps():
 @app.route('/API/v1/applications/<APP_TOKEN>/', methods=['GET'])
 def get_app(APP_TOKEN):
     credential = request.headers.get('Authorization', None)
-    credential_id = credential.split()[1]
-    if not credential_id:
-        return jsonify(applications_responses[47])
+    
+    if not credential:
+        return jsonify(applications_responses[43])
 
+    credential_id = credential.split()[1]
+    
     module_response = applications.get_app.apply_async([credential_id, APP_TOKEN],
                                                     queue= "loghub",
                                                     routing_key= "loghub"
@@ -103,9 +107,11 @@ def get_app(APP_TOKEN):
 @app.route('/API/v1/applications/<APP_TOKEN>/', methods=['DELETE'])
 def delete_apps(APP_TOKEN):
     credential = request.headers.get('Authorization', None)
+    
+    if not credential:
+        return jsonify(applications_responses[43])
     credential_id = credential.split()[1]
-    if not credential_id:
-        return jsonify(applications_responses[47])
+
     module_response = applications.delete_apps.apply_async([APP_TOKEN, credential_id],
                                                     queue="loghub",
                                                     routing_key="loghub"

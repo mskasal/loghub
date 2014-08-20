@@ -20,10 +20,11 @@ def jsonize_request():
 @app.route('/API/v1/applications/<APP_TOKEN>/', methods=['POST'])
 def logging(APP_TOKEN):
     credential = request.headers.get('Authorization', None)
-    credential_id = credential.split()[1]
-    if not credential_id:
-        return jsonify(log_responses[47])
+    
+    if not credential:
+        return jsonify(log_responses[55])
 
+    credential_id = credential.split()[1]
     entry = jsonize_request()
     module_response = logs.logging.apply_async(
                                             [APP_TOKEN,entry],
@@ -47,22 +48,29 @@ def logging(APP_TOKEN):
 @app.route('/API/v1/logs', methods=['GET'])
 def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
     credential = request.headers.get('Authorization',None)
-    credential_id = credential.split()[1]
-    if not credential_id:
-        return jsonify(log_responses[47])
+    
+    if not credential:
+        return jsonify(log_responses[55])
 
-    module_response = logs.query_log.apply_async([ credential_id,
+    credential_id = credential.split()[1]
+
+    module_response = logs.query_log.apply_async([credential_id,
                                         limit, level,
                                         keyword, newerThan,
                                         olderThan],
                                         queue="loghub",
                                         routing_key="loghub"
                                         ).get()
+    print module_response
+
+    if isinstance(module_response, int):
+        return jsonify(log_responses[module_response])
+    
     for entry in module_response:
         entry["_id"] = str(entry["_id"])
 
     if isinstance(module_response, list):
-        response = {}       
+        response = generic_responses[20].copy()    
         response["data"] = {}
         response["data"]["entries"] = module_response
     
@@ -71,7 +79,6 @@ def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
     if module_response == 19:
         return jsonify(generic_responses[19])
 
-    if isinstance(module_response, int):
-        return jsonify(log_responses[module_response])
+    
 
     

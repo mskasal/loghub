@@ -29,6 +29,7 @@ def register_app(name,credential_id):
             }    
 
     app_id = coll.insert(app)
+    print "Eklenen App ID {}".format(app_id)
    
 
     user_id = db["users"].find_one({"credential_id":credential_id })["_id"]
@@ -72,6 +73,7 @@ def get_apps(credential_id):
 		return 44
 	user_id = user["_id"]	
 	app_ids = get_user_apps(user_id)
+
 
 	if not app_ids:
 		return 45 
