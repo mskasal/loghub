@@ -8,7 +8,7 @@ users_responses = {
 	32: {"status": {"code": 32, "message": "That user already registered."}},
 	33: {"status": {"code": 33, "message": "Email required."}},
 	34: {"status": {"code": 34, "message": "Email is invalid."}},
-	35: {"status": {"code": 35, "message": "Kamil required."}},
+	35: {"status": {"code": 35, "message": "CREDENTIAL_ID required."}},
 	36: {"status": {"code": 36, "message": "CREDENTIAL_ID is invalid."}}, # was duplicate of 25, then changed.
 	37: {"status": {"code": 37, "message": "Password required."}},
 	38: {"status": {"code": 38, "message": "Password is invalid."}},
