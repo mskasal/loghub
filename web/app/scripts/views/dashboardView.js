@@ -19,13 +19,18 @@ define([
         },
 
         render: function(page) {
+
             this.$el.html(dashboardTemplate);
+
             $("#app").html(this.$el);
+
             Backbone.history.navigate("dashboard/logs", {
                 trigger: true
-            })
+            });
+
             this.bind();
         },
+        
         events: {
             "click .addapp": "openAddApp"
         },

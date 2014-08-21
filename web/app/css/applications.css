@@ -44,6 +44,7 @@
 	}
 	#applications .applications-filter .add-new-application{
 		margin-top: 10px;
+		margin-left: 16.66666667%;	
 	}
 	#applications .applications-filter .add-new-application button{
 		float:right;

@@ -33,12 +33,17 @@ define([
 
     //view collection
     var ApplicationsView = Backbone.View.extend({
+
         el: "#applications",
+
         initialize: function() {
             var that = this;
+
+            Logger.i("Applications View initialized");
+
             this.collection.fetch({
                 headers: {
-                    'Authorization': Common.CREDENTIAL_ID
+                    'Authorization': 'CREDENTIAL_ID ' +localStorage.CREDENTIAL_ID
                 },
                 success: function() {
                     that.render();
@@ -79,14 +84,13 @@ define([
             var that = this;
 
             var applicationName = this.$("#application-name").val();
-            console.log(applicationName)
 
             this.collection.create({
                 name: that.applicationName
             }, {
                 wait: true,
                 headers: {
-                    'Authorization': Common.CREDENTIAL_ID
+                    'Authorization': 'CREDENTIAL_ID '+ localStorage.CREDENTIAL_ID
                 }
             })
         }

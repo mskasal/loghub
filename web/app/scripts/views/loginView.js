@@ -12,7 +12,7 @@ define([
         className: "login",
         initialize: function() {
 
-            Logger.i('Initialized Login View');
+            Logger.i('Login View Initialized');
 
             if (Common.loggedIn) {
                 /**
@@ -51,8 +51,9 @@ define([
 
             this.model.set(formValues);
 
-            this.model.login().always(function() {
-                if (that.model.get("loggedIn")) {
+            this.model.login().done(function() {
+
+                if (Common.loggedIn) {
                     Logger.i("Logged in");
 
                     /**

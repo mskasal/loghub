@@ -15,7 +15,7 @@ define([
         template: AlarmsViewTemplate,
 
         initialize: function() {
-            this.$el.attr("href","#")
+            this.$el.attr("href", "#")
         },
 
         render: function() {
@@ -38,7 +38,7 @@ define([
             var that = this;
             this.collection.fetch({
                 headers: {
-                    'Authorization': Common.CREDENTIAL_ID
+                    'Authorization': 'CREDENTIAL_ID ' + Common.CREDENTIAL_ID
                 },
                 success: function() {
                     that.render();
@@ -54,10 +54,12 @@ define([
 
         addAll: function() {
 
-            if (this.popover){
+            if (this.popover) {
                 this.popover.empty();
-            }else
-                this.popover = $("<ul/>",{class:'popoverContent list-group'});
+            } else
+                this.popover = $("<ul/>", {
+                    class: 'popoverContent list-group'
+                });
 
             this.collection.each(this.addOne, this);
 
