@@ -22,7 +22,7 @@ def jsonize_request():
 
 @app.route('/API/v1/applications', methods=['POST'])
 def register_app():
-    credential = request.headers.get('Authorization',None)
+    credential = request.headers.get('X-Authorization',None)
     if not credential:
         return jsonify(applications_responses[43])
     credential_id = credential.split()[1]
@@ -54,7 +54,7 @@ def register_app():
 
 @app.route('/API/v1/applications', methods=['GET'])
 def get_apps():
-    credential = request.headers.get('Authorization', None)
+    credential = request.headers.get('X-Authorization', None)
     
     if not credential:
         return jsonify(applications_responses[43])
@@ -78,7 +78,7 @@ def get_apps():
 
 @app.route('/API/v1/applications/<APP_TOKEN>/', methods=['GET'])
 def get_app(APP_TOKEN):
-    credential = request.headers.get('Authorization', None)
+    credential = request.headers.get('X-Authorization', None)
     
     if not credential:
         return jsonify(applications_responses[43])
@@ -106,7 +106,7 @@ def get_app(APP_TOKEN):
 
 @app.route('/API/v1/applications/<APP_TOKEN>/', methods=['DELETE'])
 def delete_apps(APP_TOKEN):
-    credential = request.headers.get('Authorization', None)
+    credential = request.headers.get('X-Authorization', None)
     
     if not credential:
         return jsonify(applications_responses[43])
@@ -130,7 +130,7 @@ def delete_apps(APP_TOKEN):
 
 @app.route('/API/v1/applications/<APP_TOKEN>/token', methods=['PUT'])
 def reset_app_token(APP_TOKEN):
-    credential = request.headers.get('Authorization', None)
+    credential = request.headers.get('X-Authorization', None)
     credential_id = credential.split()[1]
     if not credential_id:
         return jsonify(applications_responses[47])
