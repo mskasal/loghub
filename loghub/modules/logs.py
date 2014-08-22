@@ -18,18 +18,22 @@ def logging(APP_TOKEN, entry):
         return 51
 
     app = db.apps.find_one({"APP_TOKEN": APP_TOKEN})
-    
+    if not app:
+        return 57
+
     entry["appid"] = str(app["_id"])
     entry["date"] = str(datetime.datetime.utcnow())
 
     new_entry = {
         "level": entry["level"],
         "appid": entry["appid"],
-        "date": str(datetime),
-        "metadata": entry["metadata"]
+        "date": entry["date"],
+        "metadata": entry["metadata"],
+        "message": entry["message"]
     }
     try:
         coll.insert(new_entry.copy())
+        del new_entry["appid"]
         return new_entry
     except:
         return 52

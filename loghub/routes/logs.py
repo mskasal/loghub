@@ -44,9 +44,6 @@ def logging(APP_TOKEN):
         response["data"] = entry
         return jsonify(response)
 
-    if not isinstance(module_response, int):
-        return jsonify(generic_responses[19])
-
 
     if isinstance(module_response, int):
         return jsonify(log_responses[module_response])
