@@ -62,7 +62,6 @@ def query_log():
             del logfilter[each]
 
 
-
     credential_id = credential.split()[1]
 
     module_response = logs.query_log.apply_async([credential_id, logfilter],
@@ -74,9 +73,6 @@ def query_log():
     if isinstance(module_response, int):
         return jsonify(log_responses[module_response])
     
-    for entry in module_response:
-        entry["_id"] = str(entry["_id"])
-
     if isinstance(module_response, list):
         response = generic_responses[20].copy()    
         response["data"] = {}
