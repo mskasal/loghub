@@ -40,6 +40,7 @@ def logging(APP_TOKEN, entry):
 
 @c.task(name="loghub.modules.logs.query_log")
 def query_log(credential_id, logfilter):
+    print(logfilter)
     if "limit" not in logfilter:
         logfilter["limit"] = 100
     else:
@@ -55,21 +56,21 @@ def query_log(credential_id, logfilter):
             "APP_TOKEN": {"$in": logfilter["APP_TOKENS"]}
             }))
         app_ids = {"$in": [str(app["_id"]) for app in req_apps]}
-
+    print(app_ids)
     query = {}
     query["appid"] = app_ids
 
     if "keyword" in logfilter:
-        query["message"] = {"$regex": logfilter["keyword"]}
+        query["message"] = {"$regex": "|".join(logfilter["keyword"])}
 
     if "level" in logfilter:
         query["level"] = {"$in": logfilter["level"].split(",")}
 
     if "newer_than" in logfilter:
-        query["date"] = {"$gt": logfilter["newer_than"]}
+        query["date"] = {"$gt": logfilter["newer_than"][0]}
 
     if "older_than" in logfilter:
-        query["date"] = {"$lt": logfilter["older_than"]}
+        query["date"] = {"$lt": logfilter["older_than"][0]}
 
     log_entries = sorted(list(coll.find(query)), key=lambda x: x["date"])[:logfilter["limit"]]
 

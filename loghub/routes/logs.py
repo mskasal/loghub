@@ -55,12 +55,10 @@ def query_log():
         return jsonify(log_responses[55])
 
     logfilter = dict(request.args)
-    for each in logfilter:
-        if len(logfilter[each]) == 1:
-            logfilter[each] = logfilter[each][0]
+
     keys = logfilter.keys()
     for each in keys:
-        if not logfilter[each]:
+        if logfilter[each] == [""]:
             del logfilter[each]
 
 
