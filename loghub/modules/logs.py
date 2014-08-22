@@ -60,7 +60,7 @@ def query_log(credential_id, logfilter):
     query["appid"] = app_ids
 
     if "keyword" in logfilter:
-        query["log"] = {"$regex": logfilter["keyword"]}
+        query["message"] = {"$regex": logfilter["keyword"]}
 
     if "level" in logfilter:
         query["level"] = {"$in": logfilter["level"].split(",")}
