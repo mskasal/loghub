@@ -40,22 +40,22 @@ def logging(APP_TOKEN, entry):
 
 @c.task(name="loghub.modules.logs.query_log")
 def query_log(credential_id, logfilter):
-    print(logfilter)
     if "limit" not in logfilter:
         logfilter["limit"] = 100
     else:
         logfilter["limit"] = int(logfilter["limit"])
-
     if "APP_TOKENS" not in logfilter:
         user = db["users"].find_one({"credential_id": credential_id})
-        app_ids = {"$in": get_user_apps(user["_id"])}
-        app_ids["$in"] = [str(each) for each in app_ids["$in"]]
+        app_ids = {"$in": [str(each) for each in get_user_apps(user["_id"])]}
 
     else:
+        logfilter["APP_TOKENS"] = logfilter["APP_TOKENS"][0].split(",")
         req_apps = list(db.apps.find({
             "APP_TOKEN": {"$in": logfilter["APP_TOKENS"]}
             }))
         app_ids = {"$in": [str(app["_id"]) for app in req_apps]}
+    print(logfilter)
+
     print(app_ids)
     query = {}
     query["appid"] = app_ids
@@ -71,8 +71,8 @@ def query_log(credential_id, logfilter):
 
     if "older_than" in logfilter:
         query["date"] = {"$lt": logfilter["older_than"][0]}
-
-    log_entries = sorted(list(coll.find(query)), key=lambda x: x["date"])[:logfilter["limit"]]
+    log_entries = sorted(list(coll.find(query, {"_id": 0, "appid": 0})), key=lambda x: x["date"])[:logfilter["limit"]]
+    print(log_entries)
 
     if not log_entries:
         return 54
