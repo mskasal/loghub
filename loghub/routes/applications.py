@@ -27,7 +27,9 @@ def register_app():
         return jsonify(applications_responses[43])
     credential_id = credential.split()[1]
     data = jsonize_request()
-
+    if "name" not in data:
+        return applications_responses[42]
+    
     module_response = applications.register_app.apply_async([data["name"], credential_id],
                                                     queue="loghub",
                                                     routing_key="loghub"

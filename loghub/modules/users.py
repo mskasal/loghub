@@ -98,6 +98,7 @@ def reset_user_password(email, new_password, code):
 			{"$set": {"password": new_password}}, 
 			upsert=False)
 	if response["n"] > 0:
+		db.codes.remove({"email": email})
 		return 20
 	else:
 		return 31
