@@ -96,11 +96,17 @@ define([
         },
 
         filter: function() {
+            var that = this;
+
             this.setFilterParameters();
+
             this.collection.fetch({data: this.filterModel.attributes, 
                 wait: true,
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                },
+                success: function(response){
+                    that.addAll();
                 }
             });
         },
