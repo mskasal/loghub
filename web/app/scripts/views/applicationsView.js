@@ -41,6 +41,7 @@ define([
                 }
             })
         },
+        
         render: function() {
 
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));

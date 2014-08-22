@@ -9,6 +9,7 @@ define([
     var AlarmsModel = Backbone.Model.extend({
         // Default attributes for the model
 
+        idAttribute: "id",
         initialize: function() {
 
         },

@@ -14,15 +14,55 @@ define([
         className: 'list-group-item alarm',
         template: AlarmsViewTemplate,
 
-        initialize: function() {
-            this.$el.attr("href", "#")
-        },
+        initialize: function() {},
 
         render: function() {
 
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));
 
             return this;
+        },
+
+        events: {
+            "click .delete-alarm": "deleteAlarm",
+            "click .get-alarm": "getAlarm"
+        },
+
+        getAlarm: function(event) {
+            var that = this;
+            $(event.currentTarget).attr("disabled", "disabled");
+            this.model.fetch({
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                },
+                success: function(model, response) {
+                    Logger.i("Alarm Get Request with : " + response.status.message);
+                    Logger.i("Alarm Got: " + model.attributes.id);
+                    that.$(".details").html(JSON.stringify(model.toJSON()))
+                    $(event.currentTarget).removeAttr("disabled");
+                },
+                error: function() {
+                    $(event.currentTarget).removeAttr("disabled");
+                }
+            })
+        },
+
+        deleteAlarm: function(event) {
+            var that = this;
+            $(event.currentTarget).attr("disabled", "disabled");
+            this.model.destroy({
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                },
+                success: function(model, response) {
+                    Logger.i("Alarm Delete Request with : " + response.status.message);
+                    Logger.i("Alarm Deleted: " + model.attributes.id);
+                    that.$el.remove();
+                },
+                error: function() {
+                    $(event.currentTarget).removeAttr("disabled");
+                }
+            })
         },
 
         mustacheTemplate: function(template, JSON) {
@@ -64,9 +104,9 @@ define([
             this.collection.each(this.addOne, this);
         },
 
-        addOne: function(application) {
+        addOne: function(alarm) {
             var alarmView = new AlarmView({
-                model: application
+                model: alarm
             });
 
             this.$('#alarms-list').prepend(alarmView.render().el);
@@ -83,10 +123,10 @@ define([
 
                 wait: true,
 
-                success:function(response){
-                    if (response.status.code == 20){
+                success: function(response) {
+                    if (response.status.code == 20) {
                         that.render();
-                    }else
+                    } else
                         return false;
                 }
             })
