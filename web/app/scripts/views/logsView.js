@@ -126,11 +126,11 @@ define([
             this.filterModel.set({
                 APP_TOKENS: applications.toString(),
                 limit: limit,
-                sortedBy: sortedBy,
+                sortedBy: "",
                 keyword: keyword,
                 level: level.toString(),
-                newerThan: newerThan,
-                olderThan: olderThan
+                newerThan: "",
+                olderThan: ""
             });
         }
     });
