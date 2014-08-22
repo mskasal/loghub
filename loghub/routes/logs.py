@@ -17,12 +17,18 @@ def jsonize_request():
         abort(400)
     return data
 
-@app.route('/API/v1/applications/<APP_TOKEN>/', methods=['POST'])
+@app.route('/API/v1/applications/<APP_TOKEN>/logs', methods=['POST'])
 def logging(APP_TOKEN):
     credential = request.headers.get('X-Authorization', None)
     
     if not credential:
         return jsonify(log_responses[55])
+    if "level" not in request.json:
+        return jsonify(log_responses[56])
+    if "message" not in request.json:
+        return jsonify(log_responses[56])
+    if "metadata" not in request.json:
+        return jsonify(log_responses[56])
 
     credential_id = credential.split()[1]
     entry = jsonize_request()
