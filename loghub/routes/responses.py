@@ -30,7 +30,7 @@ log_responses = {
     52: {"status": {"code": 52, "message": "Couldn't write the log to database"}},
     53: {"status": {"code": 53, "message": "There isn't any APP_TOKEN for query"}},
     54: {"status": {"code": 54, "message": "Couldn't find any logs for these criterias"}},
-    55: {"status": {"code": 55, "message": "Credential id required"}}
+    55: {"status": {"code": 55, "message": "Credential id required"}},
     56: {"status": {"code": 56, "message": "level, message, metadata must be specified"}}
 }
 applications_responses = {
