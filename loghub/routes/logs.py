@@ -46,18 +46,25 @@ def logging(APP_TOKEN):
         return jsonify(log_responses[module_response])
 
 @app.route('/API/v1/logs', methods=['GET'])
-def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
+def query_log():
     credential = request.headers.get('X-Authorization',None)
-    
     if not credential:
         return jsonify(log_responses[55])
 
+    logfilter = dict(request.args)
+    for each in logfilter:
+        if len(logfilter[each]) == 1:
+            logfilter[each] = logfilter[each][0]
+    keys = logfilter.keys()
+    for each in keys:
+        if not logfilter[each]:
+            del logfilter[each]
+
+
+
     credential_id = credential.split()[1]
 
-    module_response = logs.query_log.apply_async([credential_id,
-                                        limit, level,
-                                        keyword, newerThan,
-                                        olderThan],
+    module_response = logs.query_log.apply_async([credential_id, logfilter],
                                         queue="loghub",
                                         routing_key="loghub"
                                         ).get()
@@ -78,7 +85,3 @@ def query_log(limit=None,level=None,keyword=None,newerThan=None,olderThan=None):
 
     if module_response == 19:
         return jsonify(generic_responses[19])
-
-    
-
-    
