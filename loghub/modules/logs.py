@@ -54,9 +54,7 @@ def query_log(credential_id, logfilter):
             "APP_TOKEN": {"$in": logfilter["APP_TOKENS"]}
             }))
         app_ids = {"$in": [str(app["_id"]) for app in req_apps]}
-    print(logfilter)
 
-    print(app_ids)
     query = {}
     query["appid"] = app_ids
 
@@ -72,9 +70,5 @@ def query_log(credential_id, logfilter):
     if "older_than" in logfilter:
         query["date"] = {"$lt": logfilter["older_than"][0]}
     log_entries = sorted(list(coll.find(query, {"_id": 0, "appid": 0})), key=lambda x: x["date"])[:logfilter["limit"]]
-    print(log_entries)
-
-    if not log_entries:
-        return 54
 
     return log_entries
