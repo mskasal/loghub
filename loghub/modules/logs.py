@@ -43,7 +43,7 @@ def query_log(credential_id, logfilter):
     if "limit" not in logfilter:
         logfilter["limit"] = 100
     else:
-        logfilter["limit"] = int(logfilter["limit"])
+        logfilter["limit"] = int(logfilter["limit"][0])
     if "APP_TOKENS" not in logfilter:
         user = db["users"].find_one({"credential_id": credential_id})
         app_ids = {"$in": [str(each) for each in get_user_apps(user["_id"])]}
@@ -64,7 +64,7 @@ def query_log(credential_id, logfilter):
         query["message"] = {"$regex": "|".join(logfilter["keyword"])}
 
     if "level" in logfilter:
-        query["level"] = {"$in": logfilter["level"].split(",")}
+        query["level"] = {"$in": logfilter["level"][0].split(",")}
 
     if "newer_than" in logfilter:
         query["date"] = {"$gt": logfilter["newer_than"][0]}
