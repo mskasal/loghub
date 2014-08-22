@@ -15,6 +15,14 @@ define([
         },
         initialize: function () {
             console.log(this.get("CREDENTIAL_ID"));
+        },
+
+        parse: function(response) {
+            this.status = response.status;
+            if (response.data) {
+                return response.data;
+            }
+            return response;
         }
 
     });

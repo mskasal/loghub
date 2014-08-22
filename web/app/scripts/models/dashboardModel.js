@@ -11,9 +11,17 @@ define([
         defaults: {
             title: ' Dashboard'
         },
+
         initialize: function() {
             Logger.i("Dashboard Model Initialize: " + this.defaults.title);
 
+        },
+
+        parse: function(response) {
+            if (response.data) {
+                return response.data;
+            }
+            return response;
         }
 
     });

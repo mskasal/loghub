@@ -43,10 +43,9 @@ define([
             var that = this;
             Logger.i("Logs View initialized");
 
-            this.collection
             this.collection.fetch({
                 headers: {
-                    'Authorization': 'CREDENTIAL_ID ' + Common.CREDENTIAL_ID
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
                 },
                 success: function() {
                     that.render();
@@ -67,6 +66,7 @@ define([
             $('.logs-filter .selectpicker').selectpicker({
                 width: "100%"
             });
+            
             $('.logs-filter .input-daterange').datepicker({
                 todayBtn: 'linked',
                 autoclose: true
@@ -96,27 +96,33 @@ define([
         },
 
         filter: function() {
-            
+            this.setFilterParameters();
+            this.collection.fetch({data: this.filterModel.attributes, 
+                wait: true,
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                }
+            });
         },
 
         setFilterParameters: function(a) {
 
             var $filter = this.$(".logs-filter");
 
-            var applications = $filter.find("#application-selected").val().toString(),
+            var applications = $filter.find("#application-selected").val() || "",
                 limit = $filter.find("#logs-limit").val(),
                 sortedBy = $filter.find("#logs-sort").val(),
                 keyword = $filter.find("#logs-contain").val(),
-                level = $filter.find("#logs-level").val().toString(),
-                olderThan = $filter.find("#datepicker-logs-date-range #older-than").datepicker('getDate').toString(),
-                newerThan = $filter.find("#datepicker-logs-date-range #newer-than").datepicker('getDate').toString();
+                level = $filter.find("#logs-level").val() || "",
+                olderThan = $filter.find("#datepicker-logs-date-range").datepicker('getDate') | "",
+                newerThan = $filter.find("#datepicker-logs-date-range").datepicker('getDate') | "";
 
             this.filterModel.set({
-                applications: applications,
+                APP_TOKENS: applications.toString(),
                 limit: limit,
                 sortedBy: sortedBy,
                 keyword: keyword,
-                level: level,
+                level: level.toString(),
                 newerThan: newerThan,
                 olderThan: olderThan
             });

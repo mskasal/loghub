@@ -8,15 +8,17 @@ define([
 
     var LogsModel = Backbone.Model.extend({
         // Default attributes for the model
-        defaults: {
-            "APP_TOKEN": "....",
-            "message": "....",
-            "level": "info",
-            "date": "....",
-            "metadata": "...."
-          },
+
         initialize: function() {
 
+        },
+
+        parse: function(response) {
+            this.status = response.status;
+            if (response.data) {
+                return response.data;
+            }
+            return response;
         }
 
     });

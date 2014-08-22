@@ -64,6 +64,11 @@ define([
          */
         index: function() {
             Logger.i("Navigating Index");
+
+            if (!localStorage.CREDENTIAL_ID)
+                this.navigate('login',true);
+            else
+                this.navigate('dashboard',true);
         },
 
         /**
@@ -77,6 +82,7 @@ define([
                 this.loginView = new LoginView({
                     model: this.loginModel
                 });
+
             this.loginView.render();
 
             Logger.i("Navigating Login");
@@ -116,7 +122,6 @@ define([
                     collection: Logs
                 });
 
-            this.logsView.render();
         },
 
         /**

@@ -121,7 +121,7 @@
 
             <!-- logs list -->
             <div class="list-group col-xs-12 col-sm-7 col-md-7 col-lg-8" id="logs-list">
-                
+                nothing
             </div>
 
         </div>
@@ -160,6 +160,38 @@
             </div>
             <div class="list-group" id="application-list"></div>
         </div>
-        <div class="tab-pane" id="alarms">...</div>
+        <div class="tab-pane" id="alarms">
+            <form class="create-alarm-form form-inline" role="form">
+
+                <div class="form-group">
+                    <label for="alarm-name">name</label>
+                    <input type="text" class="form-control" id="alarm-name" placeholder="" name="name">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="alarm-keyword">keyword</label>
+                    <input type="text" class="form-control" id="alarm-keyword" placeholder="" name="keyword">
+                </div>
+
+                <div class="form-group">
+                    <label for="alarm-limit">limit</label>
+                    <input type="text" class="form-control" id="alarm-limit" placeholder="" name="limit">
+                </div>
+
+                <div class="form-group">
+                    <label for="alarm-receiver">receiver</label>
+                    <input type="text" class="form-control" id="alarm-receiver" placeholder="" name="receivers">
+                </div>
+
+                <div class="form-group">
+                    <label for="alarm-note">note</label>
+                    <input type="text" class="form-control" id="alarm-note" placeholder="" name="note">
+                </div>
+
+                <button class="btn btn-success" type="button" id="create-alarm">Create Alarm</button>
+            </form>
+            <div class="list-group" id="alarms-list"></div>
+        </div>
     </div>
 </div>

@@ -8,19 +8,17 @@ define([
 
     var AlarmsModel = Backbone.Model.extend({
         // Default attributes for the model
-        defaults: {
-            "id": "48cusrkravuqe50",
-            "APP_TOKEN": "any",
-            "active": 1,
-            "name": "urgent internal problems",
-            "keyword": "fatal error",
-            "level": "any",
-            "limit": 1,
-            "receiver": ["sales@ domain.com", "technical@ domain.com"],
-            "note": "please have a look at this ASAP",
-        },
+
         initialize: function() {
 
+        },
+
+        parse: function(response) {
+            this.status = response.status;
+            if (response.data) {
+                return response.data;
+            }
+            return response;
         }
 
     });

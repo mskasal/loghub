@@ -3,20 +3,22 @@ define([
     'backbone',
     'common',
     'logger'
-], function (Backbone, Common, Logger) {
+], function(Backbone, Common, Logger) {
     'use strict';
 
     var ApplicationsModel = Backbone.Model.extend({
         // Default attributes for the model
-        defaults: {
+        idAttribute: "APP_TOKEN",
+        initialize: function() {
 
-            "id": null,
-            "name": null,
-            "createdAt": null,
-            "APP_TOKEN": null
         },
-        initialize: function () {
 
+        parse: function(response) {
+            this.status = response.status;
+            if (response.data) {
+                return response.data;
+            }
+            return response;
         }
 
     });

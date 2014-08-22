@@ -39,8 +39,9 @@ require([
 ], function(Backbone, AppView, Workspace, Logger) {
     /*jshint nonew:false*/
     // Initialize routing and start Backbone.history()
-    new Workspace();
+    var route = new Workspace();
     Backbone.history.start();
+    route.navigate(location.hash, true)
     Logger.start();
     Logger.i("Main Initialized");
     // Initialize the application view

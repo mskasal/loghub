@@ -9,7 +9,7 @@ define([
     var FilterModel = Backbone.Model.extend({
         // Default attributes for the model
         defaults: {
-            applications: "",
+            APP_TOKENS: "",
             limit: "",
             sortedBy: "",
             keyword: "",

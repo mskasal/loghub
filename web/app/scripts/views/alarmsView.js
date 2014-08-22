@@ -33,17 +33,24 @@ define([
     //view collection
     var AlarmsView = Backbone.View.extend({
         el: "#alarms",
+
         notification: $("#alarms-notification"),
+
         initialize: function() {
             var that = this;
             this.collection.fetch({
                 headers: {
-                    'Authorization': 'CREDENTIAL_ID ' + Common.CREDENTIAL_ID
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
                 },
                 success: function() {
                     that.render();
                 }
             });
+            this.collection.bind('add', this.addOne, this);
+        },
+
+        events: {
+            "click #create-alarm": "createAlarm"
         },
 
         render: function() {
@@ -53,32 +60,63 @@ define([
         },
 
         addAll: function() {
-
-            if (this.popover) {
-                this.popover.empty();
-            } else
-                this.popover = $("<ul/>", {
-                    class: 'popoverContent list-group'
-                });
-
+            this.$('#alarms-list').empty();
             this.collection.each(this.addOne, this);
-
-            this.notification.popover({
-                trigger: "click",
-                placement: "bottom",
-                container: "body",
-                content: this.popover.html(),
-                html: true
-            });
-
-            this.$el.html(this.popover)
         },
 
-        addOne: function(alarm) {
+        addOne: function(application) {
             var alarmView = new AlarmView({
-                model: alarm
+                model: application
             });
-            this.popover.append(alarmView.render().el);
+
+            this.$('#alarms-list').prepend(alarmView.render().el);
+        },
+
+        createAlarm: function() {
+            var that = this;
+            var params = this.getAlarmParameters();
+            this.collection.create(params, {
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID,
+                    'Content-Type': 'application/json'
+                },
+
+                wait: true,
+
+                success:function(response){
+                    if (response.status.code == 20){
+                        that.render();
+                    }else
+                        return false;
+                }
+            })
+        },
+
+        getAlarmParameters: function() {
+            var b = {}
+            var $form = this.$(".create-alarm-form");
+            var list = $form.find("input");
+
+            for (var i in list) {
+                var a = {
+
+                }
+                a[$(list[i]).attr("name")] = $(list[i]).val()
+                b = $.extend(b, a);
+                if (i == 4)
+                    break;
+            }
+
+            return b;
+
+        },
+
+        inputSerialize: function(obj) {
+            var a = {};
+            var key = obj.attr("name") || "";
+
+            a[key] = obj.text();
+            return a;
         }
     });
 
