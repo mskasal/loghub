@@ -2,7 +2,7 @@ from bson.objectid import ObjectId
 from loghub.storage import db
 from loghub.modules.privileges import get_user_apps
 from flask_celery import loghub_worker as c
-
+import datetime
 
 
 collection_name = "logs"
@@ -20,9 +20,17 @@ def logging(APP_TOKEN, entry):
     app = db.apps.find_one({"APP_TOKEN": APP_TOKEN})
     
     entry["appid"] = str(app["_id"])
+    entry["date"] = str(datetime.datetime.utcnow())
+
+    new_entry = {
+        "level": entry["level"],
+        "appid": entry["appid"],
+        "date": str(datetime),
+        "metadata": entry["metadata"]
+    }
     try:
-        coll.insert(entry)
-        return entry
+        coll.insert(new_entry.copy())
+        return new_entry
     except:
         return 52
 
