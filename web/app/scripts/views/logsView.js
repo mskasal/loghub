@@ -5,12 +5,14 @@ define([
     'text!templates/LogsView.html',
     'models/logsModel',
     'models/filterModel',
+    'collections/applications',
+    'views/alertifyView',
     'bootstrapSelect',
     'bootstrapDatepicker',
     'common',
     'mustache',
     'logger'
-], function(Backbone, LogViewTemplate, LogsViewTemplate, LogModel, FilterModel, Select, Datepicker, Common, Mustache, Logger) {
+], function(Backbone, LogViewTemplate, LogsViewTemplate, LogModel, FilterModel, Applications, AlertifyView, Select, Datepicker, Common, Mustache, Logger) {
     'use strict';
     //view
     var LogView = Backbone.View.extend({
@@ -42,6 +44,8 @@ define([
         initialize: function() {
             var that = this;
             Logger.i("Logs View initialized");
+            this.applications = Applications;
+            this.$applicationSelect = this.$("#application-selected");
 
             this.collection.fetch({
                 headers: {
@@ -50,8 +54,17 @@ define([
                 success: function() {
                     that.render();
                 }
+            }).done(function() {
+
+                console.log(that.collection.alertify);
+                var alertifyView = new AlertifyView({
+                    model: that.collection.alertify
+                })
+
+                that.$el.append(alertifyView.render().el)
             });
 
+            this.getApplicationList();
             this.filterModel = new FilterModel({});
             this.listenTo(this.filterModel, 'change', this.filter);
         },
@@ -66,7 +79,7 @@ define([
             $('.logs-filter .selectpicker').selectpicker({
                 width: "100%"
             });
-            
+
             $('.logs-filter .input-daterange').datepicker({
                 todayBtn: 'linked',
                 autoclose: true
@@ -100,12 +113,13 @@ define([
 
             this.setFilterParameters();
 
-            this.collection.fetch({data: this.filterModel.attributes, 
+            this.collection.fetch({
+                data: this.filterModel.attributes,
                 wait: true,
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
                 },
-                success: function(response){
+                success: function(response) {
                     that.addAll();
                 }
             });
@@ -115,7 +129,15 @@ define([
 
             var $filter = this.$(".logs-filter");
 
-            var applications = $filter.find("#application-selected").val() || "",
+            var applicationsList = [];
+
+            $filter.find("#application-selected").find(":selected").each(function() {
+                var token = $(this).data("token");
+
+                applicationsList.push(token);
+            });
+
+            var applications = applicationsList || "",
                 limit = $filter.find("#logs-limit").val(),
                 sortedBy = $filter.find("#logs-sort").val(),
                 keyword = $filter.find("#logs-contain").val(),
@@ -132,6 +154,31 @@ define([
                 newerThan: "",
                 olderThan: ""
             });
+        },
+
+        getApplicationList: function() {
+            var that = this;
+
+            this.applications.fetch({
+                wait: true,
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                }
+            }).done(function() {
+                that.applications.each(that.setApplicationsSelect, that);
+            });
+
+        },
+
+        setApplicationsSelect: function(model) {
+
+            var id = model.id;
+            var name = model.get("name");
+            var $option = $("<option />");
+
+            $option.attr("data-token", id);
+            $option.html(name);
+            $option.appendTo(this.$applicationSelect);
         }
     });
 

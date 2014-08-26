@@ -2,9 +2,10 @@
 define([
     'backbone',
     'models/applicationsModel',
+    'models/alertifyModel',
     'common'
 
-], function(Backbone, ApplicationModel, Common) {
+], function(Backbone, ApplicationModel, Alertify, Common) {
     'use strict';
 
     var Applications = Backbone.Collection.extend({
@@ -14,13 +15,20 @@ define([
         // Save all of the items under the `"items"` namespace.
         //localStorage: new Store('items-backbone'),
         initialize: function() {
-        
+
         },
 
         parse: function(response) {
-            return response.data;
-        }
+            this.alertify = new Alertify({
+                message: response.status.message,
+                code: response.status.code
+            });
 
+            if (response.data) {
+                return response.data;
+            }
+            return response;
+        }
     });
 
     return new Applications({

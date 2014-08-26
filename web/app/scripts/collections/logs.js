@@ -2,9 +2,10 @@
 define([
     'backbone',
     'models/logsModel',
+    'models/alertifyModel',
     'common'
 
-], function(Backbone, LogModel, Common) {
+], function(Backbone, LogModel, Alertify, Common) {
     'use strict';
 
     var Logs = Backbone.Collection.extend({
@@ -13,13 +14,19 @@ define([
         url: Common.apiURL + '/API/v1/logs',
         // Save all of the items under the `"items"` namespace.
         //localStorage: new Store('items-backbone'),
-        initialize: function() {
-        },
+        initialize: function() {},
 
         parse: function(response) {
-            return response.data.entries;
-        }
+            this.alertify = new Alertify({
+                message: response.status.message,
+                code: response.status.code
+            });
 
+            if (response.data) {
+                return response.data.entries;
+            }
+            return response;
+        }
     });
 
     return new Logs({

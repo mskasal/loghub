@@ -3,10 +3,11 @@ define([
     'backbone',
     'text!templates/AlarmsView.html',
     'models/alarmsModel',
+    'views/alertifyView',
     'common',
     'mustache',
     'logger'
-], function(Backbone, AlarmsViewTemplate, AlarmsModel, Common, Mustache, Logger) {
+], function(Backbone, AlarmsViewTemplate, AlarmsModel, AlertifyView, Common, Mustache, Logger) {
     'use strict';
     //view
     var AlarmView = Backbone.View.extend({
@@ -85,8 +86,18 @@ define([
                 success: function() {
                     that.render();
                 }
+            }).done(function() {
+
+                console.log(that.collection.alertify);
+                var alertifyView = new AlertifyView({
+                    model: that.collection.alertify
+                })
+
+                that.$el.append(alertifyView.render().el)
             });
+
             this.collection.bind('add', this.addOne, this);
+
         },
 
         events: {

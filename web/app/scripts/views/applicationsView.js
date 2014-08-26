@@ -4,10 +4,11 @@ define([
     'text!templates/ApplicationView.html',
     'text!templates/ApplicationsView.html',
     'models/applicationsModel',
+    'views/alertifyView',
     'common',
     'mustache',
     'logger'
-], function(Backbone, ApplicationViewTemplate, ApplicationsViewTemplate, ApplicationModel, Common, Mustache, Logger) {
+], function(Backbone, ApplicationViewTemplate, ApplicationsViewTemplate, ApplicationModel, AlertifyView, Common, Mustache, Logger) {
     'use strict';
     //view
     var ApplicationView = Backbone.View.extend({
@@ -70,6 +71,14 @@ define([
                 success: function() {
                     that.render();
                 }
+            }).done(function() {
+
+                console.log(that.collection.alertify);
+                var alertifyView = new AlertifyView({
+                    model: that.collection.alertify
+                })
+
+                that.$el.append(alertifyView.render().el)
             });
 
             this.collection.bind('add', this.addOne, this);

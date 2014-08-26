@@ -2,9 +2,10 @@
 define([
     'backbone',
     'models/alarmsModel',
+    'models/alertifyModel',
     'common'
 
-], function(Backbone, AlarmsModel, Common) {
+], function(Backbone, AlarmsModel, Alertify, Common) {
     'use strict';
 
     var Alarms = Backbone.Collection.extend({
@@ -13,11 +14,19 @@ define([
         url: Common.apiURL + '/API/v1/alarms',
         // Save all of the items under the `"items"` namespace.
         //localStorage: new Store('items-backbone'),
-        initialize: function() {
-        },
+        initialize: function() {},
 
         parse: function(response) {
-            return response.data;
+
+            this.alertify = new Alertify({
+                message: response.status.message,
+                code: response.status.code
+            });
+
+            if (response.data) {
+                return response.data;
+            }
+            return response;
         }
 
     });

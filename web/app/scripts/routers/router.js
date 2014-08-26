@@ -47,6 +47,7 @@ define([
             }
             this.dashboardView.render();
             Logger.i("Route Initialized");
+
         },
 
         /**
