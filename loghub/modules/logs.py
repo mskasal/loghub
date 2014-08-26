@@ -3,7 +3,7 @@ from loghub.storage import db
 from loghub.modules.privileges import get_user_apps
 from flask_celery import loghub_worker as c
 import datetime
-
+from math import ceil
 
 collection_name = "logs"
 coll = db[collection_name]
@@ -44,7 +44,7 @@ def query_log(credential_id, logfilter):
         logfilter["page"] = 1
     else:
         try:
-            logfilter["page"] = int(logfilter["page"])
+            logfilter["page"] = int(logfilter["page"][0])
         except:
             logfilter["page"] = 1
 
@@ -55,6 +55,8 @@ def query_log(credential_id, logfilter):
             logfilter["limit"] = int(logfilter["limit"][0])
         except:
             logfilter["limit"] = 100
+        if logfilter["limit"] > 500:
+            logfilter["limit"] = 500
 
     if "APP_TOKENS" not in logfilter:
         user = db["users"].find_one({"credential_id": credential_id})
@@ -69,7 +71,6 @@ def query_log(credential_id, logfilter):
 
     query = {}
     query["appid"] = app_ids
-
     if "keyword" in logfilter:
         query["message"] = {"$regex": "|".join(logfilter["keyword"])}
 
@@ -82,7 +83,14 @@ def query_log(credential_id, logfilter):
     if "older_than" in logfilter:
         query["date"] = {"$lt": logfilter["older_than"][0]}
 
-    log_entries = sorted(list(coll.find(query, {"_id": 0, "appid": 0})), key=lambda x: x["date"])
-    log_entries = log_entries[(logfilter["page"]-1)*limit : logfilter["page"]*logfilter["limit"]]
-
-    return log_entries
+    log_entries = sorted(list(coll.find(query, {"_id": 0})), key=lambda x: x["date"])
+    page_count = ceil(len(log_entries) / logfilter["limit"])
+    log_entries = log_entries[(logfilter["page"]-1)*logfilter["limit"] : logfilter["page"]*logfilter["limit"]]
+    app_ids = list({ObjectId(each["appid"]) for each in log_entries})
+    apps = db.apps.find({"_id": {"$in": app_ids}}, {"_id": 1, "APP_TOKEN": 1})
+    app_dictionary = dict([(str(app["_id"]), str(app["APP_TOKEN"])) for app in apps])
+    apps = list(apps)
+    for i in range(len(log_entries)):
+        log_entries[i]["APP_TOKEN"] = app_dictionary[str(log_entries[i]["appid"])]
+        del log_entries[i]["appid"]
+    return {"entries": log_entries, "total_page_count": page_count}

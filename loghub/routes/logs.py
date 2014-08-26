@@ -20,7 +20,6 @@ def jsonize_request():
 @app.route('/API/v1/applications/<APP_TOKEN>/logs', methods=['POST'])
 def logging(APP_TOKEN):
     credential = request.headers.get('X-Authorization', None)
-    
     if not credential:
         return jsonify(log_responses[55])
     if "level" not in request.json:
@@ -73,10 +72,9 @@ def query_log():
     if isinstance(module_response, int):
         return jsonify(log_responses[module_response])
     
-    if isinstance(module_response, list):
+    if isinstance(module_response, dict):
         response = generic_responses[20].copy()    
-        response["data"] = {}
-        response["data"]["entries"] = module_response
+        response["data"] = module_response
     
         return jsonify(response)
 
