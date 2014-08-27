@@ -22,7 +22,9 @@ def logging(APP_TOKEN, entry):
         return 57
 
     entry["appid"] = str(app["_id"])
-    entry["date"] = str(datetime.datetime.utcnow())
+    #entry["date"] = str(datetime.datetime.utcnow())
+    if "date" not in entry:
+        return 56
 
     new_entry = {
         "level": entry["level"],
