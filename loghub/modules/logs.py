@@ -1,10 +1,10 @@
+from __future__ import division
 from bson.objectid import ObjectId
 from loghub.storage import db
 from loghub.modules.privileges import get_user_apps
 from flask_celery import loghub_worker as c
 import datetime
 from math import ceil
-from __future__ import division
 
 collection_name = "logs"
 coll = db[collection_name]
