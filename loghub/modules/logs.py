@@ -4,6 +4,7 @@ from loghub.modules.privileges import get_user_apps
 from flask_celery import loghub_worker as c
 import datetime
 from math import ceil
+from __future__ import division
 
 collection_name = "logs"
 coll = db[collection_name]
