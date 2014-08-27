@@ -122,7 +122,7 @@ define([
                 this.logsView = new LogsView({
                     collection: Logs
                 });
-
+            this.logsView.start();
         },
 
         /**

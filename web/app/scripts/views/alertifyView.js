@@ -36,6 +36,14 @@ define([
 
         mustacheTemplate: function(template, JSON) {
             return Mustache.render(template, JSON);
+        },
+
+        hide: function(){
+            this.$el.hide();
+        },
+
+        destroy: function(){
+            this.$el.remove();
         }
     });
 

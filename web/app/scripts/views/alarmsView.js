@@ -21,12 +21,13 @@ define([
 
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));
 
+            this.$details = this.$('.details');
             return this;
         },
 
         events: {
             "click .delete-alarm": "deleteAlarm",
-            "click .get-alarm": "getAlarm"
+            "click .get-alarm-details": "getAlarm"
         },
 
         getAlarm: function(event) {
@@ -39,13 +40,18 @@ define([
                 success: function(model, response) {
                     Logger.i("Alarm Get Request with : " + response.status.message);
                     Logger.i("Alarm Got: " + model.attributes.id);
-                    that.$(".details").html(JSON.stringify(model.toJSON()))
-                    $(event.currentTarget).removeAttr("disabled");
+
+                    that.renderAlarmDetails(event.currentTarget);
                 },
                 error: function() {
                     $(event.currentTarget).removeAttr("disabled");
                 }
             })
+        },
+
+        renderAlarmDetails: function(element) {
+            this.$details.html(JSON.stringify(this.model.toJSON()))
+            $(element).removeAttr("disabled");
         },
 
         deleteAlarm: function(event) {
@@ -79,6 +85,7 @@ define([
 
         initialize: function() {
             var that = this;
+
             this.collection.fetch({
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
@@ -87,15 +94,13 @@ define([
                     that.render();
                 }
             }).done(function() {
-
-                console.log(that.collection.alertify);
-                var alertifyView = new AlertifyView({
+                that.alertifyView = new AlertifyView({
                     model: that.collection.alertify
-                })
+                });
 
-                that.$el.append(alertifyView.render().el)
+                that.$el.append(that.alertifyView.render().el)
             });
-
+            
             this.collection.bind('add', this.addOne, this);
 
         },

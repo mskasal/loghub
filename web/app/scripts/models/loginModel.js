@@ -18,7 +18,7 @@ define([
         initialize: function() {
 
             this.bind('change:CREDENTIAL_ID', this.onCREDENTIAL_IDChange, this);
-            console.log(localStorage.CREDENTIAL_ID)
+            
             if (localStorage.CREDENTIAL_ID) {
 
                 this.set({
@@ -40,7 +40,6 @@ define([
                 dataType: 'json',
                 contentType: "x-www-form-urlencoded"
             }).done(function(response) {
-                console.log(response)
                 Logger.i("Login request details: " + response.status.message);
 
                 if (response.status.code == 20) {
@@ -57,7 +56,6 @@ define([
             });
 
             Common.setItem('loggedIn', !!CREDENTIAL_ID);
-            console.log(Common)
         },
 
         setCREDENTIAL_ID: function(CREDENTIAL_ID) {

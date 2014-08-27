@@ -43,11 +43,25 @@ define([
 
         initialize: function() {
             var that = this;
-            Logger.i("Logs View initialized");
+
+
+
             this.applications = Applications;
+
+            this.filterModel = new FilterModel({});
+
+            Logger.i("Logs View initialized");
+        },
+
+        start: function() {
+            var that = this;
+
+
             this.$applicationSelect = this.$("#application-selected");
 
             this.collection.fetch({
+                wait:true,
+                reset: true,
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
                 },
@@ -56,7 +70,6 @@ define([
                 }
             }).done(function() {
 
-                console.log(that.collection.alertify);
                 var alertifyView = new AlertifyView({
                     model: that.collection.alertify
                 })
@@ -64,8 +77,8 @@ define([
                 that.$el.append(alertifyView.render().el)
             });
 
-            this.getApplicationList();
-            this.filterModel = new FilterModel({});
+            this.listenTo(this.applications, 'reset', this.setApplicationsSelect);
+            this.listenTo(this.collection, 'reset', this.addAll);
             this.listenTo(this.filterModel, 'change', this.filter);
         },
 
@@ -76,6 +89,10 @@ define([
 
         render: function() {
 
+            this.addAll();
+            this.getApplicationList();
+
+
             $('.logs-filter .selectpicker').selectpicker({
                 width: "100%"
             });
@@ -84,8 +101,6 @@ define([
                 todayBtn: 'linked',
                 autoclose: true
             });
-
-            this.addAll();
 
             Logger.i("Logs Rendered");
 
@@ -111,16 +126,12 @@ define([
         filter: function() {
             var that = this;
 
-            this.setFilterParameters();
-
             this.collection.fetch({
                 data: this.filterModel.attributes,
                 wait: true,
+                reset: true,
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
-                },
-                success: function(response) {
-                    that.addAll();
                 }
             });
         },
@@ -161,16 +172,20 @@ define([
 
             this.applications.fetch({
                 wait: true,
+                reset: true,
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
                 }
-            }).done(function() {
-                that.applications.each(that.setApplicationsSelect, that);
             });
-
         },
 
-        setApplicationsSelect: function(model) {
+        setApplicationsSelect: function(collection) {
+            var that = this;
+            this.$("#application-selected").empty();
+            collection.each(this.renderOptionOfSelect, this);
+        },
+
+        renderOptionOfSelect: function(model) {
 
             var id = model.id;
             var name = model.get("name");
@@ -178,7 +193,7 @@ define([
 
             $option.attr("data-token", id);
             $option.html(name);
-            $option.appendTo(this.$applicationSelect);
+            this.$("#application-selected").append($option[0].outerHTML).selectpicker("refresh")
         }
     });
 

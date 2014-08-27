@@ -73,7 +73,6 @@ define([
                 }
             }).done(function() {
 
-                console.log(that.collection.alertify);
                 var alertifyView = new AlertifyView({
                     model: that.collection.alertify
                 })
