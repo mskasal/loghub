@@ -1,19 +1,54 @@
 /*global define */
 define([
     'backbone',
+    'collections/queu',
     'models/logsModel',
     'models/alertifyModel',
     'common'
 
-], function(Backbone, LogModel, Alertify, Common) {
+], function(Backbone, Queu, LogsModel, Alertify, Common) {
     'use strict';
 
     var Logs = Backbone.Collection.extend({
         // Reference to this collection's model.
-        model: LogModel,
+        model: LogsModel,
         url: Common.apiURL + '/API/v1/logs',
+        live: true,
+        stream: false,
         // Save all of the items under the `"items"` namespace.
         //localStorage: new Store('items-backbone'),
+
+        update: function(last) {
+            var that = this;
+            console.log(that.total_page_count)
+            Queu.fetch({
+                reset: true,
+                data: {
+                    newer_than: last,
+                    page: that.total_page_count
+                },
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                },
+                success: function(res) {
+                    if (Queu.models.length) {
+                        console.log(last, Queu)
+                    } else
+                        console.log("nothing new")
+                }
+            })
+        },
+
+        mergeQueu: function() {
+            this.fetch({
+                reset: true,
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                }
+            })
+            Queu.reset();
+        },
+
         initialize: function() {},
 
         parse: function(response) {
@@ -23,6 +58,7 @@ define([
             });
 
             if (response.data) {
+                this.total_page_count = response.data.total_page_count;
                 return response.data.entries;
             }
             return response;
@@ -30,6 +66,6 @@ define([
     });
 
     return new Logs({
-        model: LogModel
+        model: LogsModel
     });
 });

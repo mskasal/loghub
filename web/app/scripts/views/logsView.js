@@ -5,35 +5,73 @@ define([
     'text!templates/LogsView.html',
     'models/logsModel',
     'models/filterModel',
+    'models/applicationsModel',
     'collections/applications',
+    'collections/queu',
     'views/alertifyView',
+    'views/queuView',
     'bootstrapSelect',
     'bootstrapDatepicker',
     'common',
     'mustache',
+    'moment',
     'logger'
-], function(Backbone, LogViewTemplate, LogsViewTemplate, LogModel, FilterModel, Applications, AlertifyView, Select, Datepicker, Common, Mustache, Logger) {
+], function(Backbone, LogViewTemplate, LogsViewTemplate, LogModel, FilterModel, ApplicationsModel, Applications, Queu, AlertifyView, QueuView, Select, Datepicker, Common, Mustache, Moment, Logger) {
     'use strict';
     //view
     var LogView = Backbone.View.extend({
 
         template: LogViewTemplate,
         tagName: "a",
-        className: "log-item list-group-item",
+        className: "log-item list-group-item row",
 
         initialize: function() {
+            this.applicationsModel = new ApplicationsModel();
 
+            this.listenTo(this.applicationsModel, 'change', this.showApplicationDetail);
+        },
+
+        events: {
+            "click":"toggleSelect"
         },
 
         render: function() {
-
+            console.log(this.model.get('date'))
+            this.model.set({date: Moment(this.model.get('date')).format('lll')})
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));
-
+            this.$applicationDetail = this.$(".application");
+            this.getApplication();
             return this;
         },
 
         mustacheTemplate: function(template, JSON) {
             return Mustache.render(template, JSON);
+        },
+
+        getApplication: function() {
+            var that = this;
+
+            var app_token = this.model.get("APP_TOKEN");
+            this.applicationsModel.url = Common.apiURL + '/API/v1/applications/' + app_token
+            this.applicationsModel.fetch({
+                wait: true,
+                reset: true,
+                headers: {
+                    'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
+                }
+            })
+
+        },
+
+        showApplicationDetail: function(model) {
+            var html = '<span class="name">[{{name}}]</span>';
+            var html = Mustache.render(html, model.toJSON());
+            this.$applicationDetail.html(html);
+        },
+
+        toggleSelect: function(){
+            this.$el.toggleClass('selected');
+            this.$('.log ul li i.glyphicon-ok').toggleClass('hidden');
         }
     });
 
@@ -44,9 +82,11 @@ define([
         initialize: function() {
             var that = this;
 
-
-
             this.applications = Applications;
+
+            this.queuView = new QueuView({
+                collection: Queu
+            });
 
             this.filterModel = new FilterModel({});
 
@@ -60,7 +100,7 @@ define([
             this.$applicationSelect = this.$("#application-selected");
 
             this.collection.fetch({
-                wait:true,
+                wait: true,
                 reset: true,
                 headers: {
                     'X-Authorization': 'CREDENTIAL_ID ' + localStorage.CREDENTIAL_ID
@@ -75,16 +115,25 @@ define([
                 })
 
                 that.$el.append(alertifyView.render().el)
+                if (this.interval)
+                    clearInterval(this.interval)
+                this.interval = setInterval(function() {
+                    var lastItem = _.last(that.collection.models).toJSON().date;
+                    that.collection.update(lastItem)
+                }, 20000)
             });
+
 
             this.listenTo(this.applications, 'reset', this.setApplicationsSelect);
             this.listenTo(this.collection, 'reset', this.addAll);
+            this.listenTo(this.collection, 'add', this.addAll);
             this.listenTo(this.filterModel, 'change', this.filter);
         },
 
         events: {
             "click .filter-toggle-button": "toggleFilter",
-            "click #filter-submit-button": "setFilterParameters"
+            "click #filter-submit-button": "setFilterParameters",
+            "click .showqueu": "showQueu"
         },
 
         render: function() {
@@ -105,6 +154,10 @@ define([
             Logger.i("Logs Rendered");
 
             return this;
+        },
+
+        showQueu: function(){
+            this.collection.mergeQueu();
         },
 
         toggleFilter: function() {
@@ -136,7 +189,7 @@ define([
             });
         },
 
-        setFilterParameters: function(a) {
+        setFilterParameters: function() {
 
             var $filter = this.$(".logs-filter");
 

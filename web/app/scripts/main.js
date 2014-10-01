@@ -8,6 +8,7 @@ require.config({
         bootstrapDatepicker: 'vendor/datepicker/js/bootstrap-datepicker',
         logger: "vendor/logger/logger",
         mustache: "vendor/mustache/mustache",
+        moment: "vendor/moment/moment",
         text: 'vendor/requirejs-text/text'
     },
     shim: {
@@ -45,5 +46,5 @@ require([
     Logger.start();
     Logger.i("Main Initialized");
     // Initialize the application view
-    new AppView();
+    window.app = new AppView();
 });

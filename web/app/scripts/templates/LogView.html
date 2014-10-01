@@ -1,5 +1,16 @@
-<h4 class="name">{{name}}</h4>
-<div class="message">{{message}}</div>
-<div class="level">{{level}}</div>
-<div class="date">{{date}}</div>
-
+<div class="log col-md-10">
+	<ul class="list-inline">
+		<li><i class="glyphicon glyphicon-ok hidden"></i></li>
+		<li class="level" data-level="{{level}}">{{level}}</li>
+		<li class="date">{{date}}</li>
+		<li class="application"></li>
+		<li class="text">{{message}}</li>
+	</ul>
+</div>
+<div class="menu-row col-md-2">
+	<ul class="menu list-inline">
+		<li>
+			<i class="glyphicon glyphicon-trash"></i>
+		</li>
+	</ul>
+</div>

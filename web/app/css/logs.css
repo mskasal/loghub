@@ -1,5 +1,10 @@
 #logs{
 	padding-top: 30px;
+	cursor: pointer;
+}
+
+.log-item.selected{
+	background-color: transparent;
 }
 
 #logs .logs-filter.open{
@@ -47,4 +52,34 @@
 		transition-property: all;
 		transition-timing-function: initial;
 	}
+}
+
+.menu {
+	right: -45px;
+	position: absolute;
+	z-index: -100000;
+	height: auto;
+	width: 6%;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.selected .menu {
+	right: 10px;
+	position: absolute;
+	height: auto;
+	z-index: 100000;
+	width: 6%;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.container-fluid {
+	z-index: 1;
 }

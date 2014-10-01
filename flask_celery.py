@@ -3,8 +3,8 @@ from celery import Celery
 
 
 
-loghub_worker = Celery("loghub_worker", broker="amqp://loghub//",
-                    backend= 'mongodb://loghub//',
+loghub_worker = Celery("loghub_worker", broker="amqp://localhost//",
+                    backend= 'mongodb://localhost//',
                     include= ['loghub.modules.users','loghub.modules.alarms','loghub.modules.applications','loghub.modules.logs']
                     )
 
