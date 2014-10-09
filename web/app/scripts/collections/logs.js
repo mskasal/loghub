@@ -20,7 +20,7 @@ define([
 
         update: function(last) {
             var that = this;
-            console.log(that.total_page_count)
+            
             Queu.fetch({
                 reset: true,
                 data: {

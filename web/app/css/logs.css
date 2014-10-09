@@ -40,6 +40,13 @@
 	border-radius:0;
 }
 
+#logs .showqueu {
+	border-left: none;
+	border-right: none;
+	border-radius:0;
+	cursor: pointer;
+	text-align: center;
+}
 
 @media (max-width: 768px) {
 	#logs .logs-filter{

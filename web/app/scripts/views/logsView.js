@@ -36,7 +36,6 @@ define([
         },
 
         render: function() {
-            console.log(this.model.get('date'))
             this.model.set({date: Moment(this.model.get('date')).format('lll')})
             this.$el.html(this.mustacheTemplate(this.template, this.model.toJSON()));
             this.$applicationDetail = this.$(".application");
